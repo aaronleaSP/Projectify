@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+
+    <script src="scripts/getuser.js"> // Get user email and corresponding logic</script>
+
+    <link href="styles/topheader.css" type="text/css" rel="stylesheet">
+    <link href="styles/topnav.css" type="text/css" rel="stylesheet">
+
+    <script src="scripts/topnav.js"></script>
+</head>
+<body>
+<div class="topheader">
+    <img src="images/icon.png" id="logo" alt="logo">
+    <span id="usertext">Welcome, <span id="user"></span>!</span>
+    <input type="button" value="Log out" id="signout" onclick="signOut()">
+</div><br/>
+<div class="topnav">
+    <a class="active" href="#projectmanagement" onclick="updateNav(this)">Project Management</a>
+    <a href="#permission" onclick="updateNav(this)">Permission</a>
+    <a href="#task" onclick="updateNav(this)">Task</a>
+    <a href="#calendar" onclick="updateNav(this)">Calendar</a>
+    <a href="#teammember" onclick="updateNav(this)">Team Member</a>
+</div>
+
+<div id="projectmanagement">
+    Project Management
+    <input type="button" value="Create project" id="createproject" onclick="createProject()">
+</div>
+</body>
+</html>

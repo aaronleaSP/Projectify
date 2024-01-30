@@ -1,0 +1,29 @@
+.topheader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.topheader #usertext {
+    margin-left: auto;
+    display: inline-block;
+    text-align: center;
+}
+
+.topheader #signout {
+    margin-left: auto;
+    margin-right: 16px;
+    float: right;
+}
+
+.topheader #logo {
+    max-width: 100%;
+    height: 64px;
+}
+
+.topheader::after {
+    content: "";
+    display: table;
+    clear: both;
+}
