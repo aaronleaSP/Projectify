@@ -7,12 +7,12 @@
 
 .topheader #usertext {
     margin-left: auto;
+    margin-right: auto;
     display: inline-block;
     text-align: center;
 }
 
 .topheader #signout {
-    margin-left: auto;
     margin-right: 16px;
     float: right;
 }
