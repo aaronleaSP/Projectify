@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projectify - Login</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+  <link href="styles/login.css" rel="stylesheet" type="text/css">
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+
+  <link rel="icon" href="./images/favicon.ico" type="image/x-icon"/>
+
+  <script src="scripts/login.js"></script>
+
+  <script>
+    function showRegister() {
+      let textError = document.getElementById("textError");
+      let errorMessage = document.getElementById("error-message");
+
+      textError.innerText = "";
+      errorMessage.style.display = "none";
+
+      let registerForm = document.getElementById("registerForm");
+      let loginForm = document.getElementById("loginForm");
+      let loginButton = document.getElementById("loginButton");
+      let registerButton = document.getElementById("registerButton");
+
+      if (registerForm.style.display === "none") {
+        registerForm.style.display = "block";
+        registerForm.classList.add("active");
+        loginForm.style.display = "none";
+        loginForm.classList.remove("active");
+
+        loginButton.classList.remove("active");
+        registerButton.classList.add("active");
+      }
+    }
+
+    function showLogin() {
+      let textError = document.getElementById("textError");
+      let errorMessage = document.getElementById("error-message");
+
+      textError.innerText = "";
+      errorMessage.style.display = "none";
+
+      let registerForm = document.getElementById("registerForm");
+      let loginForm = document.getElementById("loginForm");
+      let loginButton = document.getElementById("loginButton");
+      let registerButton = document.getElementById("registerButton");
+
+      if (loginForm.style.display === "none") {
+        loginForm.style.display = "block";
+        loginForm.classList.add("active");
+        registerForm.style.display = "none";
+        registerForm.classList.remove("active");
+
+        loginButton.classList.add("active");
+        registerButton.classList.remove("active");
+      }
+    }
+  </script>
+</head>
+<body>
+<div class="container">
+  <div class="image-container">
+    <img src="images/bg.jpg" alt="Background Image">
+  </div>
+
+  <div class="form-container">
+    <h2>Welcome to Projectify</h2><br/>
+
+    <div class="toggle-buttons">
+      <input id="loginButton" type="button" value="Login" onclick="showLogin()" class="active">
+      <input id="registerButton" type="button" value="Register" onclick="showRegister()">
+    </div>
+
+    <p id="error-message" style="display: none"><span id="textError" style="color: red"></span></p>
+  <form id="loginForm" class="active">
+    <label for="emaillogin">Email:</label><br/>
+    <input type="text" id="emaillogin" name="Email" required><br/>
+
+    <label for="passwordlogin">Password:</label><br/>
+    <input type="password" id="passwordlogin" name="password" required><br/>
+    <br/><input type="button" value="Enter" onclick="logIn()" class="button"><br/>
+  </form>
+
+  <form id="registerForm" style="display: none">
+    <label for="usernameregister">Username:</label><br/>
+    <input type="text" id="usernameregister" name="Username" required><br/>
+
+    <label for="emailregister">Email:</label><br/>
+    <input type="text" id="emailregister" name="Email" required><br/>
+
+    <label for="passwordregister">Password:</label><br/>
+    <input type="password" id="passwordregister" name="password" required><br/>
+
+    <label for="confirmpasswordregister">Confirm Password:</label><br/>
+    <input type="password" id="confirmpasswordregister" name="confirmpassword" required><br/>
+
+    <br/><input type="button" value="Enter" onclick="signUp()" class="button"><br/>
+  </form>
+    <div id="customBtn" onclick="signInWithGoogle()">
+      <span class="icon"></span>
+      <span class="buttonText">Continue with Google</span><br/>
+  </div>
+</div>
+</body>
+</html>

@@ -2,21 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Homepage</title>
-    <link rel="stylesheet" href="homepage.css">
+    <title>Projectify - Dashboard</title>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+
+    <script src="scripts/getuser.js"> // Get user email and corresponding logic</script>
+
+    <link rel="stylesheet" href="styles/dashboard.css">
+
+    <link rel="icon" href="./images/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
-
 <header>
     <div class="logo">
-        <img src="logo.png" alt="Logo">
+        <img src="images/icon.png" alt="Logo">
     </div>
     <div class="welcome">
-        Welcome
+        Welcome, <span id="user"></span>
     </div>
     <div class="right-section">
-        <img src="notification.png" alt="notification">
-        <a href="logout.php">Logout</a>
+        <img src="images/notification.png" alt="notification" id="notification">
+        <input type="button" value="Log out" id="signout" onclick="signOut()">
     </div>
 </header>
 
@@ -159,6 +166,5 @@
         document.getElementById(sectionId).style.display = 'block';
     }
 </script>
-
 </body>
 </html>

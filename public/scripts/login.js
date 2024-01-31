@@ -19,8 +19,8 @@ function signUp() {
     let password = document.getElementById("passwordregister").value;
     let confirmpassword = document.getElementById("confirmpasswordregister").value;
 
+    let errorMessage = document.getElementById("error-message");
     let textError = document.getElementById("textError");
-    let brError = document.getElementById("brError");
 
     let usernameRegex = /^[a-zA-Z0-9\s]+$/;
 
@@ -42,11 +42,11 @@ function signUp() {
 
                     promise2.then(() => {
                         textError.innerText = "";
-                        brError.style.display = "none";
+                        errorMessage.style.display = "none";
                     }).catch((e) => {
                         if (e.code === "auth/internal-error") {
                             textError.innerText = "Invalid credentials entered";
-                            brError.style.display = "block";
+                            errorMessage.style.display = "block";
                         } else console.log(e.code);
                         signUpBool = false;
                     });
@@ -57,15 +57,15 @@ function signUp() {
             }).catch((e) => {
                 signUpBool = false;
                 textError.innerText = e.message;
-                brError.style.display = "block";
+                errorMessage.style.display = "block";
             });
         } else {
-            textError.innerText = "Passwords do not match!";
-            brError.style.display = "block";
+            textError.innerText = "Passwords do not match";
+            errorMessage.style.display = "block";
         }
     } else {
-        textError.innerText = "Username can only contain alphabets and spaces!";
-        brError.style.display = "block";
+        textError.innerText = "Username can only contain alphabets and spaces";
+        errorMessage.style.display = "block";
     }
 }
 
@@ -73,8 +73,8 @@ function logIn() {
     let email = document.getElementById("emaillogin").value;
     let password = document.getElementById("passwordlogin").value;
 
+    let errorMessage = document.getElementById("error-message");
     let textError = document.getElementById("textError");
-    let brError = document.getElementById("brError");
 
     const promise = auth.signInWithEmailAndPassword(
         email,
@@ -82,12 +82,16 @@ function logIn() {
 
     promise.then(() => {
         textError.innerText = "";
-        brError.style.display = "none";
+        errorMessage.style.display = "none";
     }).catch((e) => {
-        if (e.code === "auth/internal-error") {
-            textError.innerText = "Invalid credentials entered";
-            brError.style.display = "block";
-        } else console.log(e.code);
+        if (e.code === "auth/invalid-email") {
+            textError.innerText = "Invalid email";
+        } else if (e.code === "auth/wrong-password" || e.code === "auth/internal-error") {
+            textError.innerText = "Wrong password";
+        } else {
+            textError.innerText = e.code;
+        }
+        errorMessage.style.display = "block";
     });
 }
 

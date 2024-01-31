@@ -1,0 +1,161 @@
+/* homepage.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    color: black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px; /* Adjust the height as needed */
+}
+
+.welcome {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+}
+
+#notification {
+    margin-right: 10px;
+}
+
+nav {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #555;
+}
+
+img {
+    height: 20px;
+}
+
+.project-management {
+    padding: 20px;
+}
+
+.top-cards {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.bottom-cards {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #f9f9f9; /* Card background color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for 3D effect */
+    text-align: center;
+    transition: transform 0.3s; /* Add transition effect for hover */
+    margin: 10px; /* Adjust the margin between cards */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Move the card up slightly on hover */
+}
+
+.not-started-card {
+    background-color: #FFCCCC; /* Different background color for "Not Started" card */
+    width: 500px; /* Adjust the width as needed */
+    height: 200px;
+    margin-left: 200px;/* Adjust the height as needed */
+}
+
+.in-progress {
+    background-color: lightyellow;
+    width: 500px; /* Adjust the width as needed */
+    height: 200px;
+     /* Adjust the height as needed */
+}
+
+.done {
+    background-color: #E3FDC6;
+    width: 500px; /* Adjust the width as needed */
+    height: 200px;
+    margin-right: 200px;/* Adjust the height as needed */
+}
+
+.all-project {
+    background-color: #CBB9EC;
+    width: 600px; /* Adjust the width as needed */
+    height: 150px;
+    margin-left: 200px;/* Adjust the height as needed */
+}
+
+.add-project {
+    background-color: lightblue;
+    width: 400px; /* Adjust the width as needed */
+    height: 150px;
+    margin-right: 200px;/* Adjust the height as needed */
+}
+
+.card h3 {
+    margin-bottom: 50px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.card p {
+    margin: 0;
+}
+
+.card-link {
+    margin-top: auto;
+}
+
+.card-link a {
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 14px; /* Adjust the font size as needed */
+}
+
+/*table design*/
+#permissionSection table {
+    width: 80%; /* Adjust the width as needed */
+    margin: auto; /* Center the table */
+    border-collapse: collapse;
+    margin-top: 20px; /* Add some space at the top */
+}
+
+#permissionSection th, #permissionSection td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#permissionSection th {
+    background-color: #f2f2f2;
+}
+
+#permissionSection select {
+    width: 100%; /* Make the select boxes full-width */
+}
