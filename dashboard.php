@@ -1,38 +1,62 @@
 <!DOCTYPE html>
 <?php
-    function getAllProjects()
-    {
-        $servername = "projectifydb.c5n6aasporw4.ap-southeast-1.rds.amazonaws.com:3306";
-        $username = "admin";
-        $password = "spstudent";
-        $db_name = "projectify";
+$servername = "projectifydb.c5n6aasporw4.ap-southeast-1.rds.amazonaws.com:3306";
+$username = "admin";
+$password = "spstudent";
+$db_name = "projectify";
 
-        // Create connection
-        $conn = mysqli_connect($servername, $username, $password, $db_name);
+// Create connection
+$conn = mysqli_connect($servername, $username, $password, $db_name);
 
-        $redirect = "<meta http-equiv='refresh' content='3;URL=../dashboard.php'><p/>Redirecting you back to dashboard in 3 seconds...";
+$redirect = "<meta http-equiv='refresh' content='3;URL=../dashboard.php'><p/>Redirecting you back to dashboard in 3 seconds...";
 
-        // Check connection
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["projecttodelete"])) {
+        $deleteid = $_POST["projecttodelete"];
+
         if (!$conn) {
             die("Connection failed: " . mysqli_connect_error() . $redirect);
         }
 
+        $sql = "DELETE FROM tasks_table WHERE project_id = '$deleteid'";
 
-        $sql = "SELECT * FROM projects_table";
+        if (mysqli_query($conn, $sql)) {
+            $sql = "DELETE FROM projects_table WHERE project_id = '$deleteid'";
+            if (!mysqli_query($conn, $sql)) {
+                die("Delete tasks failed: " . mysqli_error($conn) . $redirect);
+            }
+        } else {
+            die("Delete project failed: " . mysqli_error($conn) . $redirect);
+        }
+    }
+}
+function getAllProjects()
+{
+    global $servername, $username, $password, $db_name, $redirect;
 
-        $result = mysqli_query($conn, $sql);
-        if ($result) {
-            if (mysqli_num_rows($result) > 0) {
-                // output data of each row
-                echo "<table>";
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<tr><td>", $row['project_name'], "</td>";
-                    echo "<td>", $row['project_desc'], "</td></tr>";
-                }
-                echo "</table>";
+    // Create connection
+    $conn = mysqli_connect($servername, $username, $password, $db_name);
+
+    // Check connection
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error() . $redirect);
+    }
+
+    $sql = "SELECT * FROM projects_table";
+
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        if (mysqli_num_rows($result) > 0) {
+            // output data of each row
+            echo "<table><tr><th>Project Name</th><th>Project Description</th></tr>";
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<tr><td><a href='./project.php?id=", $row['project_id'], "&name=", $row['project_name'], "'>", $row['project_name'], "</a></td>";
+                echo "<td>", $row['project_desc'], "</td>";
+                echo "<td><input type='button' value='Delete'" , "onclick=deleteProject(" , $row['project_id'], ");></td></tr>";
             }
         }
     }
+}
 ?>
 <html lang="en">
 <head>
@@ -43,6 +67,25 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
 
     <script src="scripts/getuser.js"> // Get user email and corresponding logic</script>
+
+    <script>
+        function deleteProject(projectid) {
+            var form = document.createElement("form");
+            form.id = "deleteProjectForm"
+            form.method = "post";
+            form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>";
+
+            var inputhidden = document.createElement("input");
+            inputhidden.type = "hidden";
+            inputhidden.name = "projecttodelete";
+            inputhidden.value = projectid;
+
+            form.appendChild(inputhidden);
+
+            document.body.appendChild(form);
+            document.getElementById('deleteProjectForm').submit();
+        }
+    </script>
 
     <link rel="stylesheet" href="styles/dashboard.css">
 
@@ -88,7 +131,7 @@
         <!-- Bottom three cards content goes here -->
         <div class="card not-started-card">
             <h3>To Do</h3>
-            <p class="card-link"><a href="not_started.php">Open</a></p>
+            <p class="card-link"><a href="not_started.php">View Details</a></p>
         </div>
         <div class="card in-progress">
             <h3>In Progress</h3>
@@ -216,7 +259,7 @@
 <section id="allProjectsSection" style="display: none;">
     <!-- Add project goes here -->
     <h1>All Projects</h1>
-    <?php getAllProjects() ?>;
+    <?php getAllProjects(); ?>
 
 </section>
 
@@ -254,3 +297,11 @@
 </script>
 </body>
 </html>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["projecttodelete"])) {
+        echo "<script>showSection('allProjectsSection')</script>";
+    }
+}
+?>
