@@ -1,4 +1,39 @@
 <!DOCTYPE html>
+<?php
+    function getAllProjects()
+    {
+        $servername = "projectifydb.c5n6aasporw4.ap-southeast-1.rds.amazonaws.com:3306";
+        $username = "admin";
+        $password = "spstudent";
+        $db_name = "projectify";
+
+        // Create connection
+        $conn = mysqli_connect($servername, $username, $password, $db_name);
+
+        $redirect = "<meta http-equiv='refresh' content='3;URL=../dashboard.php'><p/>Redirecting you back to dashboard in 3 seconds...";
+
+        // Check connection
+        if (!$conn) {
+            die("Connection failed: " . mysqli_connect_error() . $redirect);
+        }
+
+
+        $sql = "SELECT * FROM projects_table";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                // output data of each row
+                echo "<table>";
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<tr><td>", $row['project_name'], "</td>";
+                    echo "<td>", $row['project_desc'], "</td></tr>";
+                }
+                echo "</table>";
+            }
+        }
+    }
+?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -42,7 +77,7 @@
         <!-- Top two cards content goes here -->
         <div class="card all-project" style="flex-grow: 1">
             <h3>All Project</h3>
-            <p class="card-link"><a href="all_project.php">View Details</a></p>
+            <p class="card-link"><a onclick="showSection('allProjectsSection')">View Details</a></p>
         </div>
         <div class="card add-project">
             <h3>Add Project</h3>
@@ -52,7 +87,7 @@
     <div class="bottom-cards">
         <!-- Bottom three cards content goes here -->
         <div class="card not-started-card">
-            <h3>Not Started</h3>
+            <h3>To Do</h3>
             <p class="card-link"><a href="not_started.php">Open</a></p>
         </div>
         <div class="card in-progress">
@@ -111,7 +146,7 @@
         <div class="card">Task Type 3</div>
     </div>
 
-    <div id="inProgress">
+    <div id="inprogress">
         <h2>In Progress</h2>
         <div class="card">Task Type 4</div>
         <div class="card">Task Type 5</div>
@@ -137,12 +172,6 @@
     <div id="scheduleDisplay"></div>
 </section>
 
-<section id="addProjectSection" style="display: none;">
-    <!-- Add project goes here -->
-    <p>Add project</p>
-
-</section>
-
 <script>
     function displaySchedule() {
         var selectedDate = document.getElementById('dateInput').value;
@@ -151,6 +180,55 @@
 
         // Add your logic to display the schedule based on the selected date
         // You can fetch data from the server, show events, etc.
+    }
+</script>
+
+<section id="addProjectSection" style="display: none;">
+    <!-- Add project goes here -->
+    <h1>It all starts here</h1>
+    <span>Kickstart your journey towards project success. Start assigning tasks and deadlines today!</span><p/>
+
+
+    <form method="POST" action="scripts/createproject.php" id="addProjectForm">
+        <label for="projectname">Project Name:</label><br/>
+        <input type="text" id="projectname" name="projectname" placeholder="My CSAD project" maxlength="50" required><br/>
+        <span>Maximum limit of 50 characters.</span><p/>
+
+        <label for="projectdescription">Project Description:</label><br/>
+        <input type="text" id="projectdescription" name="projectdescription" placeholder="CSAD is a fun module!"><br/>
+        <p/><input type="button" id="createprojectbutton" value="Create" onclick="validateAddProject();">
+    </form>
+
+</section>
+
+<script>
+    function validateAddProject() {
+        var projectname = document.getElementById('projectname');
+        var regex = /^[a-zA-Z0-9_ ]+$/;
+        if ((projectname.value).trim() !== "" && regex.test(projectname.value)) {
+            document.getElementById('addProjectForm').submit();
+        } else {
+            alert("Project name can only contain alphabets, digits, spaces and underscore!") // Can change this to display CSS error
+        }
+    }
+</script>
+
+<section id="allProjectsSection" style="display: none;">
+    <!-- Add project goes here -->
+    <h1>All Projects</h1>
+    <?php getAllProjects() ?>;
+
+</section>
+
+<script>
+    function validateAddProject() {
+        var projectname = document.getElementById('projectname');
+        var regex = /^[a-zA-Z0-9_ ]+$/;
+        if ((projectname.value).trim() !== "" && regex.test(projectname.value)) {
+            document.getElementById('addProjectForm').submit();
+        } else {
+            alert("Project name can only contain alphabets, digits, spaces and underscore!") // Can change this to display CSS error
+        }
     }
 </script>
 
