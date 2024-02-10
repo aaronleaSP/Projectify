@@ -107,8 +107,8 @@ firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         if (signUpBool) {
             setTimeout(() => {
-                window.location.href = "dashboard.html";
+                window.location.href = "dashboard.php";
             }, 1000);
-        } else window.location.href = "dashboard.html";
+        } else window.location.href = "dashboard.php";
     }
 });

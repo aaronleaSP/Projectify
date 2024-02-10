@@ -78,27 +78,31 @@
     </div>
 
     <p id="error-message" style="display: none"><span id="textError" style="color: red"></span></p>
+
+
   <form id="loginForm" class="active">
     <label for="emaillogin">Email:</label><br/>
-    <input type="text" id="emaillogin" name="Email" required><br/>
+    <input type="email" id="emaillogin" required><br/>
 
     <label for="passwordlogin">Password:</label><br/>
-    <input type="password" id="passwordlogin" name="password" required><br/>
+    <input type="password" id="passwordlogin" required><br/>
     <br/><input type="button" value="Enter" onclick="logIn()" class="button"><br/>
   </form>
 
+
+
   <form id="registerForm" style="display: none">
     <label for="usernameregister">Username:</label><br/>
-    <input type="text" id="usernameregister" name="Username" maxlength="20" required><br/>
+    <input type="text" id="usernameregister" maxlength="20" required><br/>
 
     <label for="emailregister">Email:</label><br/>
-    <input type="text" id="emailregister" name="Email" required><br/>
+    <input type="email" id="emailregister" required><br/>
 
     <label for="passwordregister">Password:</label><br/>
-    <input type="password" id="passwordregister" name="password" required><br/>
+    <input type="password" id="passwordregister" required><br/>
 
     <label for="confirmpasswordregister">Confirm Password:</label><br/>
-    <input type="password" id="confirmpasswordregister" name="confirmpassword" required><br/>
+    <input type="password" id="confirmpasswordregister" required><br/>
 
     <br/><input type="button" value="Enter" onclick="signUp()" class="button"><br/>
   </form>
