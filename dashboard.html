@@ -11,12 +11,14 @@
 
     <link rel="stylesheet" href="styles/dashboard.css">
 
-    <link rel="icon" href="imagesavicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
 <header>
     <div class="logo">
-        <img src="images/icon.png" alt="Logo">
+        <a onclick="showSection('projectManagementSection')">
+            <img src="images/icon.png" alt="Logo">
+        </a>
     </div>
     <div class="welcome">
         Welcome, <span id="user"></span>
@@ -38,13 +40,13 @@
 <section class="project-management" id="projectManagementSection">
     <div class="top-cards">
         <!-- Top two cards content goes here -->
-        <div class="card all-project">
+        <div class="card all-project" style="flex-grow: 1">
             <h3>All Project</h3>
             <p class="card-link"><a href="all_project.php">View Details</a></p>
         </div>
         <div class="card add-project">
             <h3>Add Project</h3>
-            <p class="card-link"><a href="add_project.php">View Details</a></p>
+            <p class="card-link"><a onclick="showSection('addProjectSection')">View Details</a></p>
         </div>
     </div>
     <div class="bottom-cards">
@@ -133,6 +135,12 @@
     </div>
 
     <div id="scheduleDisplay"></div>
+</section>
+
+<section id="addProjectSection" style="display: none;">
+    <!-- Add project goes here -->
+    <p>Add project</p>
+
 </section>
 
 <script>
