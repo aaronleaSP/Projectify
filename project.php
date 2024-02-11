@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id = $_GET["id"];
 
 
-        $sql = "INSERT INTO tassks_table (project_id, task_name, task_status) VALUES ('$id', '$taskname', '$taskstatus')";
+        $sql = "INSERT INTO tasks_table (project_id, task_name, task_status) VALUES ('$id', '$taskname', '$taskstatus')";
         if (mysqli_query($conn, $sql)) {
             $taskid = mysqli_insert_id($conn);
 
@@ -61,7 +61,7 @@ function retrieveTask($category) {
         if (mysqli_num_rows($result) > 0) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<div class='card'>", $row['task_name'], "</div>";
+                echo "<div class='card' onclick='modifyTask(", $row['task_id'], ");'>", $row['task_name'], "</div>";
             }
         }
     }
@@ -86,6 +86,45 @@ function retrieveTask($category) {
 
         .card:hover {
             transform: translateY(-5px); /* Move the card up slightly on hover */
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+
+        /* Modal content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        /* Close button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
     <script>
@@ -140,40 +179,61 @@ function retrieveTask($category) {
 
             document.getElementById(category).appendChild(form);
         }
+
+        function modifyTask(taskid) {
+            var modal = document.getElementById('myModal');
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
+        }
     </script>
 </head>
 <body>
-</form>
+<!-- Modal popup -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p/>
+        <span id="taskid">Task ID</span>
+        <p/>
+        <span id="taskname">Task Name</span><br/>
+        <input type="button" value="Add a subtask">
+        <input type="button" value="Assign task"><p/>
+        <b>Description</b><br/>
+        <input type="text" id="taskdescription" placeholder="Add a description..."><br/>
+        <input type="button" value="Save"><p/>
+        <b>Child issues</b>
+        <table>
+            <tr>
+                <td>SUBTASK ID</td>
+                <td>SUBTASK NAME</td>
+                <td>SUBTASK ASSIGNEE</td>
+                <td>SUBTASK STATUS</td>
+            </tr>
+        </table><br/>
+        <input type="text" id="subtaskname" placeholder="Add a subtask..."><br/>
+        <input type="button" value="Create">
+    </div>
+</div>
 <div style="display: table; border-spacing: 30px">
     <div id="todo" style="display: table-cell">
         <h2>To Do</h2>
         <?php retrieveTask("To Do"); ?>
-        <!--
-        <div class="card">Task Type 1</div>
-        <div class="card">Task Type 2</div>
-        <div class="card">Task Type 3</div>
-        -->
         <input type="button" id="buttontodo" value="Add a task" onclick="addTask('todo');">
     </div>
 
     <div id="inprogress" style="display: table-cell">
         <h2>In Progress</h2>
         <?php retrieveTask("In Progress"); ?>
-        <!--
-        <div class="card">Task Type 4</div>
-        <div class="card">Task Type 5</div>
-        -->
         <input type="button" id="buttoninprogress" value="Add a task" onclick="addTask('inprogress');">
     </div>
 
     <div id="done" style="display: table-cell">
         <h2>Done</h2>
         <?php retrieveTask("Done"); ?>
-        <!--
-        <div class="card">Task Type 6</div>
-        <div class="card">Task Type 7</div>
-        <div class="card">Task Type 8</div>
-        -->
         <input type="button" id="buttondone" value="Add a task" onclick="addTask('done')">
     </div>
 </div>
