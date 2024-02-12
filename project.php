@@ -651,7 +651,7 @@ function retrievePermission() {
                                 <div>
                                     <input type="button" class="btn btn-light" style="width: 100%; text-align: start"  value="Assignee" onclick="toggleCardMenu(this); closeDateCardMenu();">
                                     <!-- Card menu for Assignee (Aaron) -->
-                                    <div id="cardMenu" class="card-menu" style="width: auto" >
+                                    <div id="cardMenu" class="card-menu" style="width: auto; display: none;" >
                                         <input type="button"  onclick="closeCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right">
                                         <h5 class="card-title"></h5>
                                         <p class="card-text">Choose members to work on this task.</p>
