@@ -347,32 +347,23 @@ function retrieveTask($category) {
 
 <section class="permission" id="permissionSection" style="display: none;">
     <!-- Permission content goes here -->
-    <p>Permission Section Content</p>
+    <h1>Invite Collaborators</h1>
     <table>
         <tr>
-            <th>Name</th>
-            <th>Task</th>
+            <th>Email Address</th>
+            <th>Username</th>
             <th>Permission</th>
         </tr>
         <tr>
-            <td>HaHa</td>
-            <td>
-                <label>
-                    <select class="form-select" >
-                        <option selected>All</option>
-                        <option value="1">Task 1</option>
-                        <option value="2">Task 2</option>
-                        <option value="3">Task 3</option>
-                    </select>
-                </label>
-            </td>
+            <td>user@example.com</td>
+            <td>username</td>
 
             <td>
                 <label>
                     <select class="form-select" >
-                        <option selected>Can edit</option>
-                        <option value="1">Can view</option>
-                        <option value="2">No</option>
+                        <option disabled selected>Owner</option>
+                        <option value="1">Editor</option>
+                        <option value="2">Viewer</option>
                     </select>
                 </label>
             </td>
