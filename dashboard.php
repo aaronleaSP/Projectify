@@ -13,21 +13,32 @@ $redirect = "<meta http-equiv='refresh' content='3;URL=dashboard.php'><p/>Redire
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["projecttodelete"])) {
         $deleteid = $_POST["projecttodelete"];
+        $user = $_POST["userEmail"];
 
         if (!$conn) {
             die("Connection failed: " . mysqli_connect_error() . $redirect);
         }
 
-        $sql = "DELETE FROM tasks_table WHERE project_id = '$deleteid'";
-        $sql2 = "DELETE FROM permissions_table WHERE project_id = '$deleteid'";
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$deleteid' AND user_email='$user' AND permission_type='Owner'";
 
-        if (mysqli_query($conn, $sql) && mysqli_query($conn, $sql2)) {
-            $sql = "DELETE FROM projects_table WHERE project_id = '$deleteid'";
-            if (!mysqli_query($conn, $sql)) {
-                die("Delete tasks and permissions failed: " . mysqli_error($conn) . $redirect);
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "DELETE FROM tasks_table WHERE project_id = '$deleteid'";
+                $sql2 = "DELETE FROM permissions_table WHERE project_id = '$deleteid'";
+
+                if (mysqli_query($conn, $sql) && mysqli_query($conn, $sql2)) {
+                    $sql = "DELETE FROM projects_table WHERE project_id = '$deleteid'";
+                    if (!mysqli_query($conn, $sql)) {
+                        die("Delete tasks and permissions failed: " . mysqli_error($conn) . $redirect);
+                    }
+                } else {
+                    die("Delete project failed: " . mysqli_error($conn) . $redirect);
+                }
             }
-        } else {
-            die("Delete project failed: " . mysqli_error($conn) . $redirect);
+            else {
+                echo "<script>alert('You do not own this project!')</script>";
+            }
         }
     }
 
