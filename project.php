@@ -126,6 +126,23 @@ function retrieveTask($category) {
             text-decoration: none;
             cursor: pointer;
         }
+        .column {
+            display: inline-block;
+            vertical-align: top;
+            width: 30%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .card {
+            background-color: #fff;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
     </style>
     <script>
         function addTask(category) {
@@ -323,25 +340,25 @@ function retrieveTask($category) {
         </div>
     </div>
 </div>
+
 <section id="projectBoardSection">
-    <div style="display: table; border-spacing: 30px">
-        <div id="todo" style="display: table-cell">
-            <h2>To Do</h2>
-            <?php retrieveTask("To Do"); ?>
-            <input type="button" id="buttontodo" value="Add a task" onclick="addTask('todo');">
-        </div>
-
-        <div id="inprogress" style="display: table-cell">
-            <h2>In Progress</h2>
-            <?php retrieveTask("In Progress"); ?>
-            <input type="button" id="buttoninprogress" value="Add a task" onclick="addTask('inprogress');">
-        </div>
-
-        <div id="done" style="display: table-cell">
-            <h2>Done</h2>
-            <?php retrieveTask("Done"); ?>
-            <input type="button" id="buttondone" value="Add a task" onclick="addTask('done')">
-        </div>
+    <div class="column" id="todo">
+        <h2>To Do</h2>
+        <?php retrieveTask("To Do"); ?>
+        <!-- Add card button -->
+        <input type="button" id="buttontodo" value="Add a task" onclick="addTask('todo');">
+    </div>
+    <div class="column" id="inprogress">
+        <h2>In Progress</h2>
+        <?php retrieveTask("In Progress"); ?>
+        <!-- Add card button -->
+        <input type="button" id="buttoninprogress" value="Add a task" onclick="addTask('inprogress');">
+    </div>
+    <div class="column" id="done">
+        <h2>Done</h2>
+        <?php retrieveTask("Done"); ?>
+        <!-- Add card button -->
+        <input type="button" id="buttondone" value="Add a task" onclick="addTask('done')">
     </div>
 </section>
 
