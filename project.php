@@ -34,72 +34,126 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["task"])) {
         $taskname = $_POST["task"];
         $taskstatus = $_POST["taskstatus"];
+        $user = $_POST["user"];
 
-        $sql = "INSERT INTO tasks_table (project_id, task_name, task_status) VALUES ('$id', '$taskname', '$taskstatus')";
-        if (mysqli_query($conn, $sql)) {
-            $taskid = mysqli_insert_id($conn);
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
 
-        } else {
-            die("Create task failed: " . mysqli_error($conn) . $redirect);
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "INSERT INTO tasks_table (project_id, task_name, task_status) VALUES ('$id', '$taskname', '$taskstatus')";
+                if (mysqli_query($conn, $sql)) {
+                    $taskid = mysqli_insert_id($conn);
+                } else {
+                    die("Create task failed: " . mysqli_error($conn) . $redirect);
+                }
+            } else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
         }
     }
 
     if (isset($_POST["taskdesc"])) {
         $taskdesc = $_POST["taskdesc"];
         $taskid = $_POST["taskid"];
+        $user = $_POST["user"];
 
-        $sql = "UPDATE tasks_table SET task_description='$taskdesc' WHERE task_id=$taskid";
-        if (!mysqli_query($conn, $sql)) {
-            die("Update task description failed: " . mysqli_error($conn) . $redirect);
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "UPDATE tasks_table SET task_description='$taskdesc' WHERE task_id=$taskid";
+                if (!mysqli_query($conn, $sql)) {
+                    die("Update task description failed: " . mysqli_error($conn) . $redirect);
+                }
+            }
+            else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
         }
     }
 
     if (isset($_POST["memberEmail"])) {
         $memberemail = $_POST["memberEmail"];
-        if (isset($_POST["updatedPermissionValue"])) {
-            $memberpermission = $_POST["updatedPermissionValue"];
+        $user = $_POST["user"];
 
-            $sql = "UPDATE permissions_table SET permission_type='$memberpermission' WHERE user_email='$memberemail'";
-            if (!mysqli_query($conn, $sql)) {
-                die("Update member failed: " . mysqli_error($conn) . $redirect);
-            }
-        }
-        else {
-            $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$memberemail'";
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND permission_type='Owner'";
 
-            $result = mysqli_query($conn, $sql);
-            if ($result) {
-                if (mysqli_num_rows($result) == 0) {
-                    $memberpermission = $_POST["permissionValue"];
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                if (isset($_POST["updatedPermissionValue"])) {
+                    $memberpermission = $_POST["updatedPermissionValue"];
 
-                    if ($memberpermission == 1) $memberpermission = "Editor";
-                    else $memberpermission = "Viewer";
-
-                    $sql = "INSERT INTO permissions_table (project_id, user_email, permission_type) VALUES ('$id', '$memberemail', '$memberpermission')";
+                    $sql = "UPDATE permissions_table SET permission_type='$memberpermission' WHERE user_email='$memberemail'";
                     if (!mysqli_query($conn, $sql)) {
-                        die("Add member failed: " . mysqli_error($conn) . $redirect);
+                        die("Update member failed: " . mysqli_error($conn) . $redirect);
                     }
                 }
+                else {
+                    $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$memberemail'";
+
+                    $result = mysqli_query($conn, $sql);
+                    if ($result) {
+                        if (mysqli_num_rows($result) == 0) {
+                            $memberpermission = $_POST["permissionValue"];
+
+                            if ($memberpermission == 1) $memberpermission = "Editor";
+                            else $memberpermission = "Viewer";
+
+                            $sql = "INSERT INTO permissions_table (project_id, user_email, permission_type) VALUES ('$id', '$memberemail', '$memberpermission')";
+                            if (!mysqli_query($conn, $sql)) {
+                                die("Add member failed: " . mysqli_error($conn) . $redirect);
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                echo "<script>alert('Only project owner can set permissions!')</script>";
             }
         }
     }
 
     if (isset($_POST["deletedTask"])) {
         $taskid = $_POST["deletedTask"];
-        $sql = "DELETE FROM tasks_table WHERE task_id='$taskid'";
+        $user = $_POST["user"];
 
-        if (!mysqli_query($conn, $sql)) {
-            die("Delete task failed: " . mysqli_error($conn) . $redirect);
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "DELETE FROM tasks_table WHERE task_id='$taskid'";
+
+                if (!mysqli_query($conn, $sql)) {
+                    die("Delete task failed: " . mysqli_error($conn) . $redirect);
+                }
+            } else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
         }
     }
 
     if (isset($_POST["updatedTaskStatus"])) {
         $updatetaskstatus = $_POST["updatedTaskStatus"];
         $updatetaskid = $_POST["updatedTaskId"];
+        $user = $_POST["user"];
 
-        $sql = "UPDATE tasks_table SET task_status='$updatetaskstatus' WHERE task_id='$updatetaskid'";
-        if (!mysqli_query($conn, $sql)) {
-            die("Update task status failed: " . mysqli_error($conn) . $redirect);
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "UPDATE tasks_table SET task_status='$updatetaskstatus' WHERE task_id='$updatetaskid'";
+                if (!mysqli_query($conn, $sql)) {
+                    die("Update task status failed: " . mysqli_error($conn) . $redirect);
+                }
+            }
+            else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
         }
     }
 }
@@ -115,7 +169,7 @@ function retrieveTask($category) {
         if (mysqli_num_rows($result) > 0) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'","'.$row['task_description'].'","'.$row['task_status'].'"',");'>", $row['task_name'], "</div>";
+                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'","'.$row['task_description'].'","'.$row['task_status'].'"',");'>", htmlspecialchars($row['task_name']), "</div>";
             }
         }
     }
@@ -220,7 +274,13 @@ function retrievePermission() {
         }
     </style>
     <script>
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
+
         function addTask(category) {
+            const user = firebase.auth().currentUser.email;
+
             var existingForms = document.querySelectorAll("#addTaskForm");
             existingForms.forEach(function(form) {
                form.parentNode.removeChild(form);
@@ -258,6 +318,11 @@ function retrievePermission() {
                 inputhidden.value = "Done";
             }
 
+            var inputuser = document.createElement("input");
+            inputuser.type = "hidden";
+            inputuser.name = "user";
+            inputuser.value = user;
+
             var button = document.createElement("input");
             button.type = "button";
             button.value = "Add task";
@@ -269,6 +334,7 @@ function retrievePermission() {
 
             form.appendChild(input);
             form.appendChild(inputhidden);
+            form.appendChild(inputuser);
             form.appendChild(document.createElement("br"));
             form.appendChild(button);
 
@@ -316,7 +382,15 @@ function retrievePermission() {
             inputhidden.name = "deletedTask";
             inputhidden.value = taskid;
 
+            const user = firebase.auth().currentUser.email;
+
+            var inputuser = document.createElement("input");
+            inputuser.type = "hidden";
+            inputuser.name = "user";
+            inputuser.value = user;
+
             form.appendChild(inputhidden);
+            form.appendChild(inputuser);
 
             document.body.appendChild(form);
             document.getElementById('deleteTaskForm').submit();
@@ -347,6 +421,10 @@ function retrievePermission() {
 
         function updateTaskDesc() {
             if ((document.getElementById("taskdescription").value).trim() !== "") {
+                const user = firebase.auth().currentUser.email;
+
+                document.getElementById("updateTaskDescUser").value = user;
+
                 document.getElementById("updateTaskDescForm").submit();
             }
         }
@@ -364,6 +442,13 @@ function retrievePermission() {
             inputhidden.type = "hidden";
             inputhidden.name = "updatedTaskStatus";
 
+            const user = firebase.auth().currentUser.email;
+
+            var inputuser = document.createElement("input");
+            inputuser.type = "hidden";
+            inputuser.name = "user";
+            inputuser.value = user;
+
             if (element === "1") {
                 inputhidden.value = "To Do";
             } else if (element === "2") {
@@ -377,6 +462,7 @@ function retrievePermission() {
 
             form.appendChild(inputhidden);
             form.appendChild(inputhidden2);
+            form.appendChild(inputuser);
 
             document.body.appendChild(form);
 
@@ -389,6 +475,9 @@ function retrievePermission() {
             if ((memberEmail).trim() !== "" && regexEmail.test(memberEmail)) {
                 auth.fetchSignInMethodsForEmail(memberEmail).then((signInMethods) => {
                     if (signInMethods.length > 0) {
+                        const user = firebase.auth().currentUser.email;
+
+                        document.getElementById("addMemberUser").value = user;
                         document.getElementById("addMemberForm").submit();
                     } else {
                         alert("User does not exist!");
@@ -400,8 +489,6 @@ function retrievePermission() {
         }
 
         function updateMember(element, email) {
-            console.log(element.value, email);
-
             var form = document.createElement("form");
             form.id = "updateMemberForm"
             form.method = "post";
@@ -419,8 +506,15 @@ function retrievePermission() {
                 inputhidden.value = "Editor";
             } else inputhidden.value = "Viewer";
 
+            const user = firebase.auth().currentUser.email;
+            var inputuser = document.createElement("input");
+            inputuser.type = "hidden";
+            inputuser.name = "user";
+            inputuser.value = user;
+
             form.appendChild(input);
             form.appendChild(inputhidden);
+            form.appendChild(inputuser);
 
             document.body.appendChild(form);
             document.getElementById('updateMemberForm').submit();
@@ -466,6 +560,7 @@ function retrievePermission() {
                     <div id="updateTaskDescription" style="display: none">
                         <input type="button" value="Save" onclick="hideUpdateTaskDesc(); updateTaskDesc();">
                         <input type="button" value="Cancel" onclick="hideUpdateTaskDesc();"><p/>
+                        <input type="hidden" id="updateTaskDescUser" name="user">
                     </div>
                 </form><p/>
                 <b>Child issues</b><input type="button" value="Add subtasks" onclick="showCreateSubTask();">
@@ -559,6 +654,7 @@ function retrievePermission() {
                 <?php global $projectname, $id; ?>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>" method="post" id="addMemberForm" onsubmit="return false;">
                     <input type="email" placeholder="Email address" id="memberEmail" name="memberEmail">
+                    <input type="hidden" name="user" id="addMemberUser">
                     <select style="width: auto" name="permissionValue">
                         <option selected value="1">Editor</option>
                         <option value="2">Viewer</option>
@@ -568,9 +664,6 @@ function retrievePermission() {
             </td>
         </tr>
     </table>
-
-
-
 </section>
 
 <section id="timelineSection" style="display: none">

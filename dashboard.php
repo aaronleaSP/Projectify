@@ -87,6 +87,10 @@ function getAllProjects()
     <script src="scripts/getuser.js"> // Get user email and corresponding logic</script>
 
     <script>
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
+
         function deleteProject(projectid) {
             const user = firebase.auth().currentUser;
             if (user !== null) {
