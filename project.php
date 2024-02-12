@@ -156,6 +156,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     }
+
+    if (isset($_POST["addAssigneeEmail"])) {
+        $assigneeEmail = $_POST["addAssigneeEmail"];
+        $taskid = $_POST["updatedTaskId"];
+        $user = $_POST["addAssigneeUser"];
+
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "UPDATE tasks_table SET assignee_email='$assigneeEmail' WHERE task_id='$taskid'";
+                if (!mysqli_query($conn, $sql)) {
+                    die("Update task assignee failed: " . mysqli_error($conn) . $redirect);
+                }
+            }
+            else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
+        }
+    }
 }
 
 
@@ -385,6 +406,8 @@ function retrievePermission() {
             document.getElementById('formtaskid').value = taskid;
             document.getElementById("assigneeEmail").value = assigneeEmail;
 
+            document.getElementById('assigneetaskid').value = taskid;
+
             document.getElementById('deleteTask').onclick = function() {
                 deleteTask(taskid);
             }
@@ -400,6 +423,12 @@ function retrievePermission() {
             }
 
             modal.style.display = "block";
+
+            if (assigneeEmail.trim() !== "") {
+                document.getElementById("assigneeButton").value = assigneeEmail;
+            } else {
+                document.getElementById("assigneeButton").value = "Assignee";
+            }
         }
 
         function deleteTask(taskid) {
@@ -569,6 +598,15 @@ function retrievePermission() {
                     tdElement.textContent = element.textContent;
                     trElement.appendChild(tdElement);
                     document.getElementById('assigneeTable').appendChild(trElement);
+
+                    tdElement.onclick = function() {
+                        const user = firebase.auth().currentUser.email;
+
+                        document.getElementById("addAssigneeUser").value = user;
+                        document.getElementById("addAssigneeEmail").value = tdElement.textContent;
+
+                        document.getElementById("addAssigneeForm").submit();
+                    }
                 });
             }
 
@@ -659,6 +697,11 @@ function retrievePermission() {
                                 <input type="button" value="Cancel" class="btn btn-warning" onclick="hideUpdateTaskDesc();"><p/>
                             </div>
                         </form>
+                        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $id . '&name=' . $projectname;?>" method="post" id="addAssigneeForm">
+                            <input type="hidden" name="updatedTaskId" id="assigneetaskid">
+                            <input type="hidden" name="addAssigneeEmail" id="addAssigneeEmail">
+                            <input type="hidden" name="addAssigneeUser" id="addAssigneeUser">
+                        </form>
                         <div>
                             <b>Child issues</b><input type="button" value="Add subtasks" onclick="showCreateSubTask();">
                             <table>
@@ -681,7 +724,7 @@ function retrievePermission() {
                             <div>
                                 <p>Modify</p>
                                 <div>
-                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start"  value="Assignee" onclick="toggleCardMenu(this); closeDateCardMenu();">
+                                    <input type="button" class="btn btn-light" id="assigneeButton" style="width: 100%; text-align: start"  value="Assignee" onclick="toggleCardMenu(this); closeDateCardMenu();">
                                     <!-- Card menu for Assignee (Aaron) -->
                                     <div id="cardMenu" class="card-menu" style="width: auto; display: none;" >
                                         <input type="button"  onclick="closeCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right">
@@ -696,7 +739,6 @@ function retrievePermission() {
                                             <tbody id="assigneeTable">
                                             </tbody>
                                         </table>
-                                        <input type="button"  class="btn btn-primary" style="width: 100%;" value="+ Add">
                                     </div>
                                 </div>
                             </div>
@@ -852,8 +894,8 @@ function retrievePermission() {
 
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["taskdesc"])) {
-        $assigneeEmail = $_POST["assigneeEmail"];
+    if (isset($_POST["taskdesc"]) || isset($_POST["addAssigneeEmail"])) {
+        $assigneeEmail = $_POST["addAssigneeEmail"];
 
         $sql = "SELECT * FROM tasks_table WHERE task_id='$taskid'";
 
