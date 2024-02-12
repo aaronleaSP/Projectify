@@ -48,11 +48,24 @@ function getAllProjects()
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
             // output data of each row
-            echo "<table><tr><th>Project Name</th><th>Project Description</th></tr>";
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<tr><td><a href='./project.php?id=", $row['project_id'], "&name=", $row['project_name'], "'>", $row['project_name'], "</a></td>";
-                echo "<td>", $row['project_desc'], "</td>";
-                echo "<td><input type='button' value='Delete'" , "onclick=deleteProject(" , $row['project_id'], ");></td></tr>";
+
+                echo "<div class='col-md mb-4'>";
+                echo "<div class='card shadow-sm mb-3>";
+                echo "<div class='card-body'>";
+                echo "<h3 class='card-title' style='text-align: left; '>" . $row['project_name'] . "</h3>";
+                echo "<p class='card-text' style='text-align: left' margin-bottom: 20px'>" . $row['project_desc'] . "</p>";
+                echo "<br>";
+                echo "<div class='d-flex justify-content-between align-items-center'>";
+                echo "<div class='btn-group'>";
+                echo "<a href='./project.php?id=" . $row['project_id'] . "&name=" . $row['project_name'] . "' class='btn btn-sm btn-outline-secondary'>View Project</a>";
+                echo "<button class='btn btn-sm btn-outline-danger' onclick='deleteProject(" . $row['project_id'] . ")'>Delete</button>";
+                echo "</div>";
+                echo "</div>";
+                echo "</div>";
+                echo "</div>";
+
+
             }
         }
     }
@@ -86,10 +99,37 @@ function getAllProjects()
             document.getElementById('deleteProjectForm').submit();
         }
     </script>
+    <style>
+        .background-image {
+            background-image: url("images/flowers.jpeg");
+            background-size: cover;
+            background-position: center;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .blur-image {
+            -webkit-backdrop-filter: blur(50px);
+            backdrop-filter: blur(50px);
+        }
+
+         #addProjectSection {
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             height: 100vh;
+
+         }
+
+    </style>
 
     <link rel="stylesheet" href="styles/dashboard.css">
-
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <header>
@@ -107,39 +147,77 @@ function getAllProjects()
     </div>
 </header>
 
-<nav>
-    <a href='#' class="active" id="projectManagement" onclick="showSection('projectManagementSection')">Project Management</a>
-    <a href='#' id="permission" onclick="showSection('permissionSection')">Permission</a>
-    <a href='#' id="task" onclick="showSection('taskSection')">Task</a>
-    <a href='#' id="calendar" onclick="showSection('calendarSection')">Calendar</a>
-    <a href='#' id="teamMember" onclick="showSection('teamMemberSection')">Team Member</a>
-</nav>
-
-<section class="project-management" id="projectManagementSection">
-    <div class="top-cards">
-        <!-- Top two cards content goes here -->
-        <div class="card all-project" style="flex-grow: 1">
-            <h3>All Project</h3>
-            <p class="card-link"><a onclick="showSection('allProjectsSection')">View Details</a></p>
-        </div>
-        <div class="card add-project">
-            <h3>Add Project</h3>
-            <p class="card-link"><a onclick="showSection('addProjectSection')">View Details</a></p>
+<!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a href='#' class="active" id="projectManagement" onclick="showSection('projectManagementSection')">Project Management</a>
+            <a href='#' id="permission" onclick="showSection('permissionSection')">Permission</a>
+            <a href='#' id="task" onclick="showSection('taskSection')">Task</a>
+            <a href='#' id="calendar" onclick="showSection('calendarSection')">Calendar</a>
+            <a href='#' id="teamMember" onclick="showSection('teamMemberSection')">Team Member</a>
         </div>
     </div>
-    <div class="bottom-cards">
-        <!-- Bottom three cards content goes here -->
-        <div class="card not-started-card">
-            <h3>To Do</h3>
-            <p class="card-link"><a href="not_started.php">View Details</a></p>
+</nav>-->
+
+<section class="project-management" id="projectManagementSection" style="margin-top: 150px" >
+    <div class="container-xxl">
+        <div class="row">
+            <div class="col-md mb-4" >
+                <div class="card">
+                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
+                    <div class="card-body">
+                        <h5 class="card-title">All Projects</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a onclick="showSection('allProjectsSection')" href="#" class="btn btn-primary">All projects</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Projects</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a onclick="showSection('addProjectSection')" href="#" class="btn btn-primary">Add project</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card in-progress">
-            <h3>In Progress</h3>
-            <p class="card-link"><a href="in_progress.php">View Details</a></p>
-        </div>
-        <div class="card done">
-            <h3>Done</h3>
-            <p class="card-link"><a href="done.php">View Details</a></p>
+        <div class="row">
+            <div class="col-md mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
+                    <div class="card-body">
+                        <h5 class="card-title">Projects to do</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="not_started.php" class="btn btn-primary">All projects</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
+                    <div class="card-body">
+                        <h5 class="card-title">Projects in progress</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="in_progress.php" class="btn btn-primary">Add project</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
+                    <div class="card-body">
+                        <h5 class="card-title">Finished Projects</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="done.php" class="btn btn-primary">Add project</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -226,22 +304,34 @@ function getAllProjects()
     }
 </script>
 
-<section id="addProjectSection" style="display: none;">
-    <!-- Add project goes here -->
-    <h1>It all starts here</h1>
-    <span>Kickstart your journey towards project success. Start assigning tasks and deadlines today!</span><p/>
+<section id="addProjectSection" style="margin-top: 275px">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="card-title">It all starts here</h1>
+                        <p class="card-text">Kickstart your journey towards project success. Start assigning tasks and deadlines today!</p>
 
+                        <form method="POST" action="scripts/createproject.php" id="addProjectForm">
+                            <div class="form-group" style="margin-top: 50px">
+                                <label for="projectname" style="margin-right: 650px">Project Name:</label>
+                                <input type="text" class="form-control" id="projectname" name="projectname" placeholder="My CSAD project" maxlength="50" required>
+                                <small class="form-text text-muted" >Maximum limit of 50 characters.</small>
+                            </div>
 
-    <form method="POST" action="scripts/createproject.php" id="addProjectForm">
-        <label for="projectname">Project Name:</label><br/>
-        <input type="text" id="projectname" name="projectname" placeholder="My CSAD project" maxlength="50" required><br/>
-        <span>Maximum limit of 50 characters.</span><p/>
+                            <div class="form-group" style="margin-top: 50px; margin-bottom: 50px">
+                                <label for="projectdescription" style="margin-right: 600px">Project Description:</label>
+                                <textarea class="form-control" id="projectdescription" name="projectdescription" placeholder="CSAD is a fun module!" rows="3"></textarea>
+                            </div>
 
-        <label for="projectdescription">Project Description:</label><br/>
-        <input type="text" id="projectdescription" name="projectdescription" placeholder="CSAD is a fun module!"><br/>
-        <p/><input type="button" id="createprojectbutton" value="Create" onclick="validateAddProject();">
-    </form>
-
+                            <button type="button" class="btn btn-primary" id="createprojectbutton" onclick="validateAddProject();">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <script>
@@ -256,11 +346,15 @@ function getAllProjects()
     }
 </script>
 
-<section id="allProjectsSection" style="display: none;">
-    <!-- Add project goes here -->
-    <h1>All Projects</h1>
-    <?php getAllProjects(); ?>
-
+<section id="allProjectsSection" style="margin-top: 225px;">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">All Projects</h1>
+                <?php getAllProjects(); ?>
+            </div>
+        </div>
+    </div>
 </section>
 
 <script>
