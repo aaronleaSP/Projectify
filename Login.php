@@ -95,7 +95,7 @@
 <body>
 <div class="container">
     <div class="image-container">
-        <img src="bg.jpg" alt="Your Image">
+        <img src="images/bg.jpg" alt="Your Image">
     </div>
 
     <div class="form-container" id="loginContainer">
