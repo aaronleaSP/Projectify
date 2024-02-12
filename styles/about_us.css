@@ -1,0 +1,62 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('../images/about_us_bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.accordion-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.accordion-item {
+    margin-bottom: 10px;
+}
+
+.accordion-box {
+    display: flex;
+    width: 800px;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding a subtle box-shadow for a 3D effect */
+    transition: box-shadow 0.3s ease; /* Adding a smooth transition for the box-shadow */
+}
+
+.accordion-box:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Adjust the box-shadow on hover for a more pronounced effect */
+}
+
+.accordion-text {
+    align-items: center;
+    font-weight: bold;
+    font-size: 20px;
+    margin-left: 20px; /* Adjusted margin for better positioning */
+    font-family: "Poppins", sans-serif;
+}
+
+.accordion-content {
+    display: none;
+    width: 800px;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.arrow {
+    margin-left: auto;
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+}
+
+.expanded .arrow {
+    transform: rotate(0deg);
+}

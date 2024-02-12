@@ -13,7 +13,8 @@ header {
 }
 
 .logo img {
-    height: 40px; /* Adjust the height as needed */
+    height: 50px;
+    width: 150px;/* Adjust the height as needed */
 }
 
 .welcome {
@@ -76,6 +77,7 @@ img {
     text-align: center;
     transition: transform 0.3s; /* Add transition effect for hover */
     margin: 10px; /* Adjust the margin between cards */
+    border-radius: 10px;
 }
 
 .card:hover {
@@ -139,7 +141,7 @@ img {
 
 /*table design*/
 #permissionSection table {
-    width: 80%; /* Adjust the width as needed */
+    width: 90%; /* Adjust the width as needed */
     margin: auto; /* Center the table */
     border-collapse: collapse;
     margin-top: 20px; /* Add some space at the top */
@@ -158,3 +160,90 @@ img {
 #permissionSection select {
     width: 100%; /* Make the select boxes full-width */
 }
+
+
+/*permission section */
+.cloud-section {
+    display: flex;
+    align-items: center;
+}
+
+.cloud-container {
+    flex: 1;
+    position: relative;
+}
+
+
+.cloud-image {
+    width: 550px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 700px; /* Set a maximum width if necessary */
+    display: block; /* Remove any default inline styles */
+    margin: 100px 0 0 0; /* Center the image within the cloud */
+}
+.table-section {
+     flex: 2;
+     padding-left: -100px;
+     margin-top: -470px;
+ }
+
+/*Task section*/
+#taskSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:400px;
+}
+
+.horizontal-section {
+    display: flex;
+    flex-direction: row;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.task-subsection {
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+    margin-left: 50px;
+}
+
+
+ .delete-button {
+     background-color: #dc3545;
+     color: white;
+     border: none;
+     padding: 6px 12px;
+     font-size: 12px;
+     margin: 50px 300px 0 0;
+ }
+
+.time {
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    font-size: 16px;
+    margin: 0 0 0 200px; /* Adjust the margin as needed */
+
+}
+
+.add-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    width:390px;
+    padding: 10px 20px; /* Adjust padding for desired length */
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 20px; /* Add border-radius for a rounded shape */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box-shadow for 3D effect */
+    transition: transform 0.3s; /* Add transition effect for hover */
+}
+
+.add-button:hover {
+    background-color: #45a049;
+    transform: translateY(-3px); /* Move the button up slightly on hover */
+}
+
+/*footer */
