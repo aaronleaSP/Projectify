@@ -349,7 +349,7 @@ function getAllProjects()
     }
 </script>
 
-<section id="addProjectSection" style="display: none;">
+<section id="addProjectSection" style="display: none; padding: 20px;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -392,7 +392,7 @@ function getAllProjects()
     }
 </script>
 
-<section id="allProjectsSection" style="display: none;">
+<section id="allProjectsSection" style="display: none; padding: 20px;">
     <div class="container">
         <div class="card">
             <div class="card-body">
