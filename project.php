@@ -218,6 +218,23 @@ function retrievePermission() {
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+        textarea{
+            resize: none;
+        }
+        .card-menu {
+            display: none;
+            width: 200px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            position: absolute;
+            z-index: 1;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+
+        .card-menu button:hover {
+            background-color: #777;
+        }
     </style>
     <script>
         function addTask(category) {
@@ -425,6 +442,41 @@ function retrievePermission() {
             document.body.appendChild(form);
             document.getElementById('updateMemberForm').submit();
         }
+
+        // Menu toggle for aaron ;)
+        function toggleCardMenu(element) {
+            var cardMenu = document.getElementById("cardMenu");
+            if (cardMenu.style.display === "none") {
+                cardMenu.style.display = "block";
+                var btn = element;
+                cardMenu.style.top = (btn.offsetTop + btn.offsetHeight) + "px";
+                cardMenu.style.left = btn.offsetLeft + "px";
+            } else {
+                cardMenu.style.display = "none";
+            }
+        }
+
+        function toggleDateCardMenu(element) {
+            var cardMenu = document.getElementById("dateCardMenu");
+            if (cardMenu.style.display === "none") {
+                cardMenu.style.display = "block";
+                var btn = element;
+                cardMenu.style.top = (btn.offsetTop + btn.offsetHeight) + "px";
+                cardMenu.style.left = btn.offsetLeft + "px";
+            } else {
+                cardMenu.style.display = "none";
+            }
+
+        }
+
+        function closeDateCardMenu() {
+            document.getElementById("dateCardMenu").style.display = "none";
+        }
+
+        function closeCardMenu() {
+            var cardMenu = document.getElementById("cardMenu");
+            cardMenu.style.display = "none";
+        }
     </script>
 
     <link rel="stylesheet" href="styles/dashboard.css">
@@ -450,83 +502,175 @@ function retrievePermission() {
     <a id="timeline" onclick="showSection('timelineSection')">Timeline</a>
     <a id="permission" onclick="showSection('permissionSection')">Invite Collaborators</a>
 </nav>
+
 <!-- Modal popup -->
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div style="display: flex">
-            <div style="flex: 1">
-                <span id="taskname">Task Name</span><span> / </span><span id="taskstatus">Task ID</span><br/>
-                <p/>
+<!-- NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEW -->
+
+<div class="modal modal-xl" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p id="taskname" class="h2">Task Name</p>
+                <p id="taskstatus">Task ID</p>
+                <input type="button"  onclick="closeModal();" class="btn-close" aria-label="Close">
+            </div>
+            <div class="modal-body">
                 <?php global $projectname, $id; ?>
-                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>" method="post" id="updateTaskDescForm">
-                    <b>Description</b><br/>
-                    <textarea id="taskdescription" name="taskdesc" placeholder="Add a description..." onclick="showUpdateTaskDesc();"></textarea><br/>
-                    <input type="hidden" name="taskid" id="formtaskid">
-                    <div id="updateTaskDescription" style="display: none">
-                        <input type="button" value="Save" onclick="hideUpdateTaskDesc(); updateTaskDesc();">
-                        <input type="button" value="Cancel" onclick="hideUpdateTaskDesc();"><p/>
+                <div class="row">
+                    <div class="col-md-8">
+                        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $id . '&name=' . $projectname;?>" method="post" id="updateTaskDescForm">
+                            <b>Description</b>
+                            <div class="form-group">
+                                <textarea class="form-control" id="taskdescription" name="taskdesc" placeholder="Add a description..." onclick="showUpdateTaskDesc();" rows="10"></textarea>
+                            </div>
+
+                            <input type="hidden" name="taskid" id="formtaskid">
+                            <div id="updateTaskDescription" style="display: none; margin-top: 15px">
+                                <input type="button" value="Save" class="btn btn-warning" onclick="hideUpdateTaskDesc(); updateTaskDesc();">
+                                <input type="button" value="Cancel" class="btn btn-warning" onclick="hideUpdateTaskDesc();"><p/>
+                            </div>
+                        </form>
+                        <div>
+                            <b>Child issues</b><input type="button" value="Add subtasks" onclick="showCreateSubTask();">
+                            <table>
+                                <tr>
+                                    <td>SUBTASK ID</td>
+                                    <td>SUBTASK NAME</td>
+                                    <td>SUBTASK ASSIGNEE</td>
+                                    <td>SUBTASK STATUS</td>
+                                </tr>
+                            </table><br/>
+                            <div id="createSubTask" style="display: none;">
+                                <input type="text" id="subtaskname" placeholder="Add a subtask..."><br/>
+                                <input type="button" value="Create">
+                                <input type="button" value="Cancel" onclick="hideCreateSubTask();">
+                            </div>
+                        </div>
                     </div>
-                </form><p/>
-                <b>Child issues</b><input type="button" value="Add subtasks" onclick="showCreateSubTask();">
-                <table>
-                    <tr>
-                        <td>SUBTASK ID</td>
-                        <td>SUBTASK NAME</td>
-                        <td>SUBTASK ASSIGNEE</td>
-                        <td>SUBTASK STATUS</td>
-                    </tr>
-                </table><br/>
-                <div id="createSubTask" style="display: none">
-                    <input type="text" id="subtaskname" placeholder="Add a subtask..."><br/>
-                    <input type="button" value="Create">
-                    <input type="button" value="Cancel" onclick="hideCreateSubTask();">
+                    <div class="col-md-4" style="border: black">
+                        <div class="align-items-center" style="flex: 2;">
+                            <div>
+                                <p>Modify</p>
+                                <div>
+                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start"  value="Assignee" onclick="toggleCardMenu(this)">
+                                    <!-- Card menu for Assignee (Aaron) -->
+                                    <div id="cardMenu" class="card-menu" style="width: auto" >
+                                        <input type="button"  onclick="closeCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right">
+                                        <h5 class="card-title"></h5>
+                                        <p class="card-text">Choose members to work on this task.</p>
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Members</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>Mark</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jacob</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">Larry the Bird</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <input type="button"  class="btn btn-primary" style="width: 100%;" value="+ Add">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="margin-top: 10px;">
+                                <div style="margin-top: 10px;">
+                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start" value="Dates" onclick="toggleDateCardMenu(this)">
+                                    <!-- Card menu for Dates -->
+                                    <div id="dateCardMenu" class="card-menu" style="width: auto; display: none;">
+                                        <input type="button" onclick="closeDateCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right;">
+                                        <h5 class="card-title">Dates</h5>
+                                        <p class="card-text">Here you can manage dates and deadlines.</p>
+                                        <div id="scheduleForm">
+                                            <div style="display: flex; flex-direction: row;">
+                                                <div style="margin-right: 20px;">
+                                                    <label for="dateInput">Start Date:</label>
+                                                    <input type="date" id="dateInput" name="dateInput" onkeydown="return false;">
+                                                </div>
+                                                <div style="margin-right: 20px;">
+                                                    <label for="dateInput2">End Date:</label>
+                                                    <input type="date" id="dateInput2" name="dateInput" onkeydown="return false;">
+                                                    <input type="time" id="timeInput" name="timeInput" onkeydown="return false;">
+                                                </div>
+                                                <div>
+                                                    <label for="selectDueStatus">Remind me:</label>
+                                                    <select class="due-select" id="selectDueStatus">
+                                                        <option value="1">No Reminder</option>
+                                                        <option value="2">10 mins</option>
+                                                        <option value="3">1 hour</option>
+                                                        <option value="4">4 hour</option>
+                                                        <option value="5">1 day</option>
+                                                        <option value="5">2 days</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <input type="button" id="scheduleButton" class="btn btn-primary" style="width: 100%;" value="Schedule" onclick="displaySchedule()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <p>Status</p>
+                            <select class="form-select" id="selectTaskStatus" aria-label="Default select example">
+                                <option value="1">To Do</option>
+                                <option value="2">In Progress</option>
+                                <option value="3">Done</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div>
-                <b>Modify</b><br/>
-                <input type="button" value="Assignee"><br/>
-                <input type="button" value="Dates"><p/>
-                <b>Status</b><br/>
-                <select id="selectTaskStatus">
-                    <option value="1">To Do</option>
-                    <option value="2">In Progress</option>
-                    <option value="3">Done</option>
-                </select><p/>
-                <input type="button" value="Delete Task" id="deleteTask">
-            </div>
-
-            <section class="calendar" id="calendarSection" style="display: none;">
-                <!-- Calendar content goes here -->
-                <p/><b>Select Start and End Dates</b>
-                <div id="scheduleForm">
-                    <label for="dateInput">Start Date:</label>
-                    <input type="date" id="dateInput" name="dateInput" onkeydown="return false;">
-
-                    <label for="dateInput2">End Date:</label>
-                    <input type="date" id="dateInput2" name="dateInput" onkeydown="return false;">
-
-                    <button id="scheduleButton" onclick="displaySchedule()">Schedule</button>
+            <div class="modal-footer">
+                <div style="margin-top: 15px;">
+                    <input type="button" class="btn btn-danger" value="Delete Task" id="deleteTask">
                 </div>
-
-                <div id="scheduleDisplay"></div>
-            </section>
-
-            <script>
-                function displaySchedule() {
-                    var selectedDate = document.getElementById('dateInput').value;
-                    var selectedDate2 = document.getElementById('dateInput2').value;
-                    var scheduleDisplay = document.getElementById('scheduleDisplay');
-                    scheduleDisplay.innerHTML = `<p>Schedule for ${selectedDate} to ${selectedDate2}</p>`;
-
-                    // Add your logic to display the schedule based on the selected date
-                    // You can fetch data from the server, show events, etc.
-                }
-            </script>
+            </div>
         </div>
     </div>
 </div>
+
+
+
+
+<section class="calendar" id="calendarSection" style="display: none;">
+    <!-- Calendar content goes here -->
+    <p/><b>Select Start and End Dates</b>
+    <div id="scheduleForm">
+        <label for="dateInput">Start Date:</label>
+        <input type="date" id="dateInput" name="dateInput" onkeydown="return false;">
+
+        <label for="dateInput2">End Date:</label>
+        <input type="date" id="dateInput2" name="dateInput" onkeydown="return false;">
+
+        <button id="scheduleButton" onclick="displaySchedule()">Schedule</button>
+    </div>
+
+    <div id="scheduleDisplay"></div>
+</section>
+
+<script>
+    function displaySchedule() {
+        var selectedDate = document.getElementById('dateInput').value;
+        var selectedDate2 = document.getElementById('dateInput2').value;
+        var scheduleDisplay = document.getElementById('scheduleDisplay');
+        scheduleDisplay.innerHTML = `<p>Schedule for ${selectedDate} to ${selectedDate2}</p>`;
+
+        // Add your logic to display the schedule based on the selected date
+        // You can fetch data from the server, show events, etc.
+    }
+</script>
+
 
 <section id="projectBoardSection">
     <div class="column" id="todo">
