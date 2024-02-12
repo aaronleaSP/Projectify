@@ -15,6 +15,26 @@
 
   <script src="scripts/login.js"></script>
 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+  <style>
+    .background-image {
+      background-image: url("images/flowers.jpeg");
+      background-size: cover;
+      background-position: center;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+
+    .blur-image {
+      -webkit-backdrop-filter: blur(50px);
+      backdrop-filter: blur(50px);
+    }
+  </style>
+
   <script>
     function showRegister() {
       let textError = document.getElementById("textError");
@@ -61,51 +81,91 @@
         registerButton.classList.remove("active");
       }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var fadeContainers = document.querySelectorAll('.fade-in-container');
+      fadeContainers.forEach(function(container) {
+        container.classList.add('fade-in');
+      });
+    });
+
   </script>
 </head>
-<body>
-<div class="container">
-  <div class="image-container">
-    <img src="images/bg.jpg" alt="Background Image">
+
+
+<body class="background-image">
+<div class="container fade-in-container">
+
+  <div class="image-container" style="position: relative;  width: auto; margin-bottom: 15px; margin-top: 15px">
+    <img class="blur-image" src="images/proj.jpg" alt="Background Image">
+    <div class="overlay"></div>
+    <h1 class="text-lights font-weight-bold outlined-text" style="font-family: 'Perpetua Titling MT'; position: absolute; top: 42%; left: 42%; transform: translate(-50%, -50%); padding: 5px; border-radius: 20px;" >&nbsp;Projectify&nbsp;</h1>
+    <h6 class="text-lights font-weight-bold outlined-text" style="font-family: 'Perpetua Titling MT'; position: absolute; top: 48%; left: 32%; transform: translate(-50%, -50%); padding: 5px; border-radius: 20px;" >definition:&nbsp;</h6>
+    <h6 class="text-lights font-weight-bold outlined-text" style="font-family: 'Perpetua Titling MT'; position: absolute; top: 55%; left: 49%; transform: translate(-50%, -50%); padding: 5px; border-radius: 20px;" >Visualize Your Success: Projectify,Where Projects Flourish</h6>
+
+
+
+
   </div>
 
   <div class="form-container">
-    <h2>Welcome to Projectify</h2><br/>
+    <h1 style="font-size: 36px; color: #333; text-align: center; margin-bottom: 20px;">Welcome to <span style="color: #007bff;">Projectify</span> </h1>
+    <h3 style="font-size: 18px; color: #333; text-align: left; margin-bottom: 20px;">Management made easier </h3>
+    <br>
 
-    <div class="toggle-buttons">
-      <input id="loginButton" type="button" value="Login" onclick="showLogin()" class="active">
-      <input id="registerButton" type="button" value="Register" onclick="showRegister()">
+
+    <div class ="mx-auto, px auto">
+      <input id="loginButton" type="button" value="Login" onclick="showLogin()" class="btn btn-outline-dark" >
+      <input id="registerButton" type="button" value="Register" onclick="showRegister()" class="btn btn-outline-dark">
     </div>
+    <br>
+    <p id="error-message" style="display: none"><span id="textError" class="text-danger d-block, mx-auto" ></span>
+    <form id="loginForm" class="active">
+    <div class="form-group, mx-auto " style="width: 300px">
+      <label for="emaillogin">Email address</label>
+      <input type="email" class="form-control" id="emaillogin" aria-describedby="emailHelp" placeholder="Enter email" name="Email" >
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="passwordlogin">Password</label>
+      <input type="password" class="form-control" id="passwordlogin" placeholder="Password" name="password">
+    </div>
+    <div align="center">
+      <br>
+      <input type="button" value="&nbsp;Enter&nbsp;" onclick="logIn()" class="btn btn-success " >
+    </div>
+    <br>
 
-    <p id="error-message" style="display: none"><span id="textError" style="color: red"></span></p>
-
-
-  <form id="loginForm" class="active">
-    <label for="emaillogin">Email:</label><br/>
-    <input type="email" id="emaillogin" required><br/>
-
-    <label for="passwordlogin">Password:</label><br/>
-    <input type="password" id="passwordlogin" required><br/>
-    <br/><input type="button" value="Enter" onclick="logIn()" class="button"><br/>
   </form>
 
+    <form id="registerForm" style="display: none;">
+      <div class="form-group, mx-auto " style="width: 300px">
+        <label for="usernameregister">Username:</label>
+        <input type="text" class="form-control" id="usernameregister" name="Username" maxlength="20" required placeholder="Enter Username">
+      </div>
+      <br>
 
+      <div class="form-group">
+        <label for="emailregister">Email:</label>
+        <input type="email" class="form-control" id="emailregister" name="Email" required placeholder="Enter Email">
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="passwordregister">Password:</label>
+        <input type="password" class="form-control" id="passwordregister" name="password" required placeholder="Enter Password">
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="confirmpasswordregister">Confirm Password:</label>
+        <input type="password" class="form-control" id="confirmpasswordregister" name="confirmpassword" required placeholder="Confirm Password">
+      </div>
+      <br>
+      <div class="text-center">
+        <input type="button" value="&nbsp;Enter&nbsp;" onclick="signUp()" class="btn btn-success">
+      </div>
+      <br>
+    </form>
 
-  <form id="registerForm" style="display: none">
-    <label for="usernameregister">Username:</label><br/>
-    <input type="text" id="usernameregister" maxlength="20" required><br/>
-
-    <label for="emailregister">Email:</label><br/>
-    <input type="email" id="emailregister" required><br/>
-
-    <label for="passwordregister">Password:</label><br/>
-    <input type="password" id="passwordregister" required><br/>
-
-    <label for="confirmpasswordregister">Confirm Password:</label><br/>
-    <input type="password" id="confirmpasswordregister" required><br/>
-
-    <br/><input type="button" value="Enter" onclick="signUp()" class="button"><br/>
-  </form>
     <div id="customBtn" onclick="signInWithGoogle()">
       <span class="icon"></span>
       <span class="buttonText">Continue with Google</span><br/>
