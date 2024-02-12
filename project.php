@@ -1,9 +1,5 @@
 <!DOCTYPE html>
 <?php
-$name = $gender = "";
-$errMsg = "";
-$error = FALSE;
-
 $redirect = "<meta http-equiv='refresh' content='3;URL=dashboard.php'><p/>Redirecting you back to dashboard in 3 seconds...";
 
 $servername = "projectifydb.c5n6aasporw4.ap-southeast-1.rds.amazonaws.com:3306";
@@ -57,6 +53,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             die("Update task description failed: " . mysqli_error($conn) . $redirect);
         }
     }
+
+    if (isset($_POST["memberEmail"])) {
+        $memberemail = $_POST["memberEmail"];
+        if (isset($_POST["updatedPermissionValue"])) {
+            $memberpermission = $_POST["updatedPermissionValue"];
+
+            $sql = "UPDATE permissions_table SET permission_type='$memberpermission' WHERE user_email='$memberemail'";
+            if (!mysqli_query($conn, $sql)) {
+                die("Update member failed: " . mysqli_error($conn) . $redirect);
+            }
+        }
+        else {
+            $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$memberemail'";
+
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
+                if (mysqli_num_rows($result) == 0) {
+                    $memberpermission = $_POST["permissionValue"];
+
+                    if ($memberpermission == 1) $memberpermission = "Editor";
+                    else $memberpermission = "Viewer";
+
+                    $sql = "INSERT INTO permissions_table (project_id, user_email, permission_type) VALUES ('$id', '$memberemail', '$memberpermission')";
+                    if (!mysqli_query($conn, $sql)) {
+                        die("Add member failed: " . mysqli_error($conn) . $redirect);
+                    }
+                }
+            }
+        }
+    }
+
+    if (isset($_POST["deletedTask"])) {
+        $taskid = $_POST["deletedTask"];
+        $sql = "DELETE FROM tasks_table WHERE task_id='$taskid'";
+
+        if (!mysqli_query($conn, $sql)) {
+            die("Delete task failed: " . mysqli_error($conn) . $redirect);
+        }
+    }
+
+    if (isset($_POST["updatedTaskStatus"])) {
+        $updatetaskstatus = $_POST["updatedTaskStatus"];
+        $updatetaskid = $_POST["updatedTaskId"];
+
+        $sql = "UPDATE tasks_table SET task_status='$updatetaskstatus' WHERE task_id='$updatetaskid'";
+        if (!mysqli_query($conn, $sql)) {
+            die("Update task status failed: " . mysqli_error($conn) . $redirect);
+        }
+    }
 }
 
 
@@ -75,8 +120,33 @@ function retrieveTask($category) {
         }
     }
 }
-?>
 
+function retrievePermission() {
+    global $conn, $id;
+    $sql = "SELECT * FROM permissions_table WHERE project_id = '$id'";
+
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        if (mysqli_num_rows($result) > 0) {
+            echo "<table><tr><th>Email Address</th><th>Permission</th></tr>";
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<tr><td>", $row['user_email'], "</td>";
+                if ($row['permission_type'] == "Owner") {
+                    echo "<td><b>Owner</b></td>";
+                } else if ($row['permission_type'] == "Editor") {
+                    echo "<td><label><select onchange='updateMember(this, ", '"'.$row['user_email'].'"',");'>", "<option value='1' selected>Editor</option><option value='2'>Viewer</option></select></label></td></tr>";
+                } else {
+                    echo "<td><label><select onchange='updateMember(this, ", '"'.$row['user_email'].'"',");'>", "<option value='1'>Editor</option><option value='2' selected>Viewer</option></select></label></td></tr>";
+                }
+            }
+            echo "</table>";
+        }
+        else {
+            echo "No results";
+        }
+    }
+}
+?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -161,12 +231,15 @@ function retrieveTask($category) {
             var form = document.createElement("form");
             form.id = "addTaskForm"
             form.method = "post";
-            form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>";
+            form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>"
 
             var input = document.createElement("input");
             input.name = "task";
             input.type = "text";
             input.placeholder = "Enter a task..."
+            input.onkeydown = function(event) {
+                if (event.key === 'Enter') event.preventDefault();
+            }
 
             var inputhidden = document.createElement("input");
             inputhidden.type = "hidden";
@@ -200,14 +273,48 @@ function retrieveTask($category) {
         function modifyTask(taskid, taskname, taskdesc, taskstatus) {
             var modal = document.getElementById('myModal');
             document.getElementById('taskname').innerHTML = "<b>" + taskname + "</b>";
-            document.getElementById('taskid').innerText = "TaskId: " + taskid;
+            document.getElementById('taskstatus').innerText = taskstatus;
             if (taskdesc !== null) {
                 document.getElementById('taskdescription').value = taskdesc;
             } else document.getElementById('taskdescription').value = "";
-            document.getElementById('taskstatus').innerText = taskstatus;
 
             document.getElementById('formtaskid').value = taskid;
+
+            document.getElementById('deleteTask').onclick = function() {
+                deleteTask(taskid);
+            }
+
+            let select = document.getElementById('selectTaskStatus');
+            if (taskstatus === "To Do") select.selectedIndex = 0;
+            else if (taskstatus === "In Progress") select.selectedIndex = 1;
+            else select.selectedIndex = 2;
+
+            document.getElementById('selectTaskStatus').onchange = function() {
+                let selectedOption = this.value;
+                updateTaskStatus(selectedOption, taskid);
+            }
+
             modal.style.display = "block";
+        }
+
+        function deleteTask(taskid) {
+            <?php global $projectname, $id; ?>
+
+            var form = document.createElement("form");
+            form.id = "deleteTaskForm"
+            form.method = "post";
+            form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>"
+
+
+            var inputhidden = document.createElement("input");
+            inputhidden.type = "hidden";
+            inputhidden.name = "deletedTask";
+            inputhidden.value = taskid;
+
+            form.appendChild(inputhidden);
+
+            document.body.appendChild(form);
+            document.getElementById('deleteTaskForm').submit();
         }
 
         function closeModal() {
@@ -237,6 +344,81 @@ function retrieveTask($category) {
             if ((document.getElementById("taskdescription").value).trim() !== "") {
                 document.getElementById("updateTaskDescForm").submit();
             }
+        }
+
+        function updateTaskStatus(element, taskid) {
+            <?php global $projectname, $id; ?>
+
+            var form = document.createElement("form");
+            form.id = "updateTaskStatusForm"
+            form.method = "post";
+            form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>"
+
+
+            var inputhidden = document.createElement("input");
+            inputhidden.type = "hidden";
+            inputhidden.name = "updatedTaskStatus";
+
+            if (element === "1") {
+                inputhidden.value = "To Do";
+            } else if (element === "2") {
+                inputhidden.value = "In Progress";
+            } else inputhidden.value = "Done";
+
+            var inputhidden2 = document.createElement("input");
+            inputhidden2.type = "hidden";
+            inputhidden2.name = "updatedTaskId";
+            inputhidden2.value = taskid;
+
+            form.appendChild(inputhidden);
+            form.appendChild(inputhidden2);
+
+            document.body.appendChild(form);
+
+            document.getElementById('updateTaskStatusForm').submit();
+        }
+
+        function addMember() {
+            let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            let memberEmail = document.getElementById('memberEmail').value;
+            if ((memberEmail).trim() !== "" && regexEmail.test(memberEmail)) {
+                auth.fetchSignInMethodsForEmail(memberEmail).then((signInMethods) => {
+                    if (signInMethods.length > 0) {
+                        document.getElementById("addMemberForm").submit();
+                    } else {
+                        alert("User does not exist!");
+                    }
+                }).catch((error) => {
+                   alert("Error: " + error);
+                });
+            }
+        }
+
+        function updateMember(element, email) {
+            console.log(element.value, email);
+
+            var form = document.createElement("form");
+            form.id = "updateMemberForm"
+            form.method = "post";
+            form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>"
+
+            var input = document.createElement("input");
+            input.name = "memberEmail";
+            input.type = "hidden";
+            input.value = email;
+
+            var inputhidden = document.createElement("input");
+            inputhidden.type = "hidden";
+            inputhidden.name = "updatedPermissionValue";
+            if (element.value === '1') {
+                inputhidden.value = "Editor";
+            } else inputhidden.value = "Viewer";
+
+            form.appendChild(input);
+            form.appendChild(inputhidden);
+
+            document.body.appendChild(form);
+            document.getElementById('updateMemberForm').submit();
         }
     </script>
 
@@ -269,19 +451,18 @@ function retrieveTask($category) {
         <span class="close" onclick="closeModal()">&times;</span>
         <div style="display: flex">
             <div style="flex: 1">
-                <span id="taskname">Task Name</span><span> / </span><span id="taskid">Task ID</span><br/>
-                <span id="taskstatus">"Task Status"</span>
+                <span id="taskname">Task Name</span><span> / </span><span id="taskstatus">Task ID</span><br/>
                 <p/>
-                <b>Description</b><br/>
                 <?php global $projectname, $id; ?>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>" method="post" id="updateTaskDescForm">
+                    <b>Description</b><br/>
                     <textarea id="taskdescription" name="taskdesc" placeholder="Add a description..." onclick="showUpdateTaskDesc();"></textarea><br/>
                     <input type="hidden" name="taskid" id="formtaskid">
                     <div id="updateTaskDescription" style="display: none">
                         <input type="button" value="Save" onclick="hideUpdateTaskDesc(); updateTaskDesc();">
                         <input type="button" value="Cancel" onclick="hideUpdateTaskDesc();"><p/>
                     </div>
-                </form>
+                </form><p/>
                 <b>Child issues</b><input type="button" value="Add subtasks" onclick="showCreateSubTask();">
                 <table>
                     <tr>
@@ -303,11 +484,12 @@ function retrieveTask($category) {
                 <input type="button" value="Assignee"><br/>
                 <input type="button" value="Dates"><p/>
                 <b>Status</b><br/>
-                <select>
-                    <option>To Do</option>
-                    <option>In Progress</option>
-                    <option>Done</option>
-                </select>
+                <select id="selectTaskStatus">
+                    <option value="1">To Do</option>
+                    <option value="2">In Progress</option>
+                    <option value="3">Done</option>
+                </select><p/>
+                <input type="button" value="Delete Task" id="deleteTask">
             </div>
 
             <section class="calendar" id="calendarSection" style="display: none;">
@@ -364,37 +546,25 @@ function retrieveTask($category) {
 
 <section class="permission" id="permissionSection" style="display: none;">
     <!-- Permission content goes here -->
-    <p>Permission Section Content</p>
+    <h1>Invite Collaborators</h1>
+    <?php retrievePermission(); ?>
     <table>
         <tr>
-            <th>Name</th>
-            <th>Task</th>
-            <th>Permission</th>
-        </tr>
-        <tr>
-            <td>HaHa</td>
-            <td>
-                <label>
-                    <select class="form-select" >
-                        <option selected>All</option>
-                        <option value="1">Task 1</option>
-                        <option value="2">Task 2</option>
-                        <option value="3">Task 3</option>
+            <td colspan="3">
+                <?php global $projectname, $id; ?>
+                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>" method="post" id="addMemberForm" onsubmit="return false;">
+                    <input type="email" placeholder="Email address" id="memberEmail" name="memberEmail">
+                    <select style="width: auto" name="permissionValue">
+                        <option selected value="1">Editor</option>
+                        <option value="2">Viewer</option>
                     </select>
-                </label>
-            </td>
-
-            <td>
-                <label>
-                    <select class="form-select" >
-                        <option selected>Can edit</option>
-                        <option value="1">Can view</option>
-                        <option value="2">No</option>
-                    </select>
-                </label>
+                    <input type="button" value="Add member" onclick="addMember();">
+                </form>
             </td>
         </tr>
     </table>
+
+
 
 </section>
 
@@ -429,6 +599,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         }
+    }
+
+    if (isset($_POST["memberEmail"])) {
+        echo "<script>showSection('permissionSection')</script>";
     }
 }
 ?>

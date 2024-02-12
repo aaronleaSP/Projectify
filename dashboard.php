@@ -8,7 +8,7 @@ $db_name = "projectify";
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $db_name);
 
-$redirect = "<meta http-equiv='refresh' content='3;URL=../dashboard.php'><p/>Redirecting you back to dashboard in 3 seconds...";
+$redirect = "<meta http-equiv='refresh' content='3;URL=dashboard.php'><p/>Redirecting you back to dashboard in 3 seconds...";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["projecttodelete"])) {
@@ -19,20 +19,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $sql = "DELETE FROM tasks_table WHERE project_id = '$deleteid'";
+        $sql2 = "DELETE FROM permissions_table WHERE project_id = '$deleteid'";
 
-        if (mysqli_query($conn, $sql)) {
+        if (mysqli_query($conn, $sql) && mysqli_query($conn, $sql2)) {
             $sql = "DELETE FROM projects_table WHERE project_id = '$deleteid'";
             if (!mysqli_query($conn, $sql)) {
-                die("Delete tasks failed: " . mysqli_error($conn) . $redirect);
+                die("Delete tasks and permissions failed: " . mysqli_error($conn) . $redirect);
             }
         } else {
             die("Delete project failed: " . mysqli_error($conn) . $redirect);
         }
     }
+
+    if (isset($_POST["userEmail"])) {
+        $useremail = $_POST["userEmail"];
+    }
 }
 function getAllProjects()
 {
-    global $servername, $username, $password, $db_name, $redirect;
+    global $servername, $username, $password, $db_name, $redirect, $useremail;
 
     // Create connection
     $conn = mysqli_connect($servername, $username, $password, $db_name);
@@ -42,7 +47,7 @@ function getAllProjects()
         die("Connection failed: " . mysqli_connect_error() . $redirect);
     }
 
-    $sql = "SELECT * FROM projects_table";
+    $sql = "SELECT * FROM projects_table WHERE project_id IN (SELECT project_id FROM permissions_table WHERE user_email='$useremail')";
 
     $result = mysqli_query($conn, $sql);
     if ($result) {
@@ -83,20 +88,56 @@ function getAllProjects()
 
     <script>
         function deleteProject(projectid) {
-            var form = document.createElement("form");
-            form.id = "deleteProjectForm"
-            form.method = "post";
-            form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>";
+            const user = firebase.auth().currentUser;
+            if (user !== null) {
+                var form = document.createElement("form");
+                form.id = "deleteProjectForm"
+                form.method = "post";
+                form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>"
 
-            var inputhidden = document.createElement("input");
-            inputhidden.type = "hidden";
-            inputhidden.name = "projecttodelete";
-            inputhidden.value = projectid;
+                var inputhidden = document.createElement("input");
+                inputhidden.type = "hidden";
+                inputhidden.name = "projecttodelete";
+                inputhidden.value = projectid;
 
-            form.appendChild(inputhidden);
+                var inputhidden2 = document.createElement("input");
+                inputhidden2.type = "hidden";
+                inputhidden2.name = "userEmail";
+                inputhidden2.value = user.email;
 
-            document.body.appendChild(form);
-            document.getElementById('deleteProjectForm').submit();
+                form.appendChild(inputhidden);
+                form.appendChild(inputhidden2);
+
+                document.body.appendChild(form);
+                document.getElementById('deleteProjectForm').submit();
+            }
+        }
+
+        function fillUserDetails() {
+            const user = firebase.auth().currentUser;
+            if (user !== null) {
+                document.getElementById("createProjectEmail").value = user.email;
+            }
+        }
+
+        function getAllProjects() {
+            const user = firebase.auth().currentUser;
+            if (user !== null) {
+                var form = document.createElement("form");
+                form.id = "allProjectForm";
+                form.method = "post";
+                form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>"
+
+                var inputhidden = document.createElement("input");
+                inputhidden.type = "hidden";
+                inputhidden.name = "userEmail";
+                inputhidden.value = user.email;
+
+                form.appendChild(inputhidden);
+
+                document.body.appendChild(form);
+                document.getElementById('allProjectForm').submit();
+            }
         }
     </script>
     <style>
@@ -172,7 +213,7 @@ function getAllProjects()
                     <div class="card-body">
                         <h5 class="card-title">All Projects</h5>
                         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a onclick="showSection('allProjectsSection')" href="#" class="btn btn-primary">All projects</a>
+                        <a onclick="getAllProjects();" href="#" class="btn btn-primary">All projects</a>
                     </div>
                 </div>
             </div>
@@ -182,7 +223,7 @@ function getAllProjects()
                     <div class="card-body">
                         <h5 class="card-title">Add Projects</h5>
                         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a onclick="showSection('addProjectSection')" href="#" class="btn btn-primary">Add project</a>
+                        <a onclick="showSection('addProjectSection'); fillUserDetails();" href="#" class="btn btn-primary">Add project</a>
                     </div>
                 </div>
             </div>
@@ -317,6 +358,7 @@ function getAllProjects()
                             <div class="form-group" style="margin-top: 50px">
                                 <label for="projectname" style="margin-right: 650px">Project Name:</label>
                                 <input type="text" class="form-control" id="projectname" name="projectname" placeholder="My CSAD project" maxlength="50" required>
+                                <input type="hidden" id="createProjectEmail" name="createProjectEmail">
                                 <small class="form-text text-muted" >Maximum limit of 50 characters.</small>
                             </div>
 
@@ -394,7 +436,7 @@ function getAllProjects()
 
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["projecttodelete"])) {
+    if (isset($_POST["projecttodelete"]) || isset($_POST["userEmail"])) {
         echo "<script>showSection('allProjectsSection')</script>";
     }
 }
