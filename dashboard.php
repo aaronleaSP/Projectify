@@ -424,6 +424,13 @@ function getAllProjects()
     </ul>
 </section>
 
+<footer>
+
+    <a href="about_us.html">About Us</a>
+    <a href="project_intro.html">Project Introduction</a>
+
+</footer>
+
 <script>
     function showSection(sectionId) {
         // Hide all sections
