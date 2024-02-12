@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (isset($_POST["taskdesc"])) {
-        $taskdesc = $_POST["taskdesc"];
+        $taskdesc = htmlspecialchars($_POST["taskdesc"], ENT_QUOTES);
         $taskid = $_POST["taskid"];
         $user = $_POST["user"];
 
@@ -192,7 +192,7 @@ function retrieveTask($category) {
         if (mysqli_num_rows($result) > 0) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'","'.$row['task_description'].'","'.$row['task_status'].'","'.$row['assignee_email'].'"',");'>", htmlspecialchars($row['task_name']), "</div>";
+                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'",'. htmlspecialchars(json_encode($row['task_description']), ENT_QUOTES).',"'.$row['task_status'].'","'.$row['assignee_email'].'"',");'>", htmlspecialchars($row['task_name']), "</div>";
             }
         }
     }
@@ -895,7 +895,8 @@ function retrievePermission() {
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["taskdesc"]) || isset($_POST["addAssigneeEmail"])) {
-        $assigneeEmail = $_POST["addAssigneeEmail"];
+        if (isset($_POST["addAssigneeEmail"])) $assigneeEmail = $_POST["addAssigneeEmail"];
+        else $assigneeEmail = "";
 
         $sql = "SELECT * FROM tasks_table WHERE task_id='$taskid'";
 
@@ -903,7 +904,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result) {
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<script>modifyTask(", $row['task_id'] . ',"' . $row['task_name'] . '","' . $row['task_description'] . '","' . $row['task_status'] . '","' . $assigneeEmail .'"', ");</script>";
+                    echo "<script>modifyTask(", $row['task_id'] . ',"' . $row['task_name'] .'",'. json_encode($row['task_description']) .',"'. $row['task_status'] . '","' . $assigneeEmail .'"', ");</script>";
                 }
             }
         }
