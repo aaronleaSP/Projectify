@@ -87,6 +87,10 @@ function getAllProjects()
     <script src="scripts/getuser.js"> // Get user email and corresponding logic</script>
 
     <script>
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
+
         function deleteProject(projectid) {
             const user = firebase.auth().currentUser;
             if (user !== null) {
@@ -204,7 +208,7 @@ function getAllProjects()
     </div>
 </nav>-->
 
-<section class="project-management" id="projectManagementSection" style="margin-top: 150px" >
+<section class="project-management" id="projectManagementSection">
     <div class="container-xxl">
         <div class="row">
             <div class="col-md mb-4" >
@@ -345,7 +349,7 @@ function getAllProjects()
     }
 </script>
 
-<section id="addProjectSection" style="margin-top: 275px; display: none">
+<section id="addProjectSection" style="display: none; padding: 20px;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -388,11 +392,11 @@ function getAllProjects()
     }
 </script>
 
-<section id="allProjectsSection" style="margin-top: 225px; display: none   ">
+<section id="allProjectsSection" style="display: none; padding: 20px;">
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title">All Projects</h1>
+                <h1 style="margin-bottom: 25px" class="card-title">All Projects</h1>
                 <?php getAllProjects(); ?>
             </div>
         </div>
@@ -419,6 +423,13 @@ function getAllProjects()
         <li>Team Member 3</li>
     </ul>
 </section>
+
+<footer>
+
+    <a href="about_us.html">About Us</a>
+    <a href="project_intro.html">Project Introduction</a>
+
+</footer>
 
 <script>
     function showSection(sectionId) {

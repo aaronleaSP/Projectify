@@ -34,72 +34,126 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["task"])) {
         $taskname = $_POST["task"];
         $taskstatus = $_POST["taskstatus"];
+        $user = $_POST["user"];
 
-        $sql = "INSERT INTO tasks_table (project_id, task_name, task_status) VALUES ('$id', '$taskname', '$taskstatus')";
-        if (mysqli_query($conn, $sql)) {
-            $taskid = mysqli_insert_id($conn);
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
 
-        } else {
-            die("Create task failed: " . mysqli_error($conn) . $redirect);
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "INSERT INTO tasks_table (project_id, task_name, task_status) VALUES ('$id', '$taskname', '$taskstatus')";
+                if (mysqli_query($conn, $sql)) {
+                    $taskid = mysqli_insert_id($conn);
+                } else {
+                    die("Create task failed: " . mysqli_error($conn) . $redirect);
+                }
+            } else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
         }
     }
 
     if (isset($_POST["taskdesc"])) {
         $taskdesc = $_POST["taskdesc"];
         $taskid = $_POST["taskid"];
+        $user = $_POST["user"];
 
-        $sql = "UPDATE tasks_table SET task_description='$taskdesc' WHERE task_id=$taskid";
-        if (!mysqli_query($conn, $sql)) {
-            die("Update task description failed: " . mysqli_error($conn) . $redirect);
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "UPDATE tasks_table SET task_description='$taskdesc' WHERE task_id=$taskid";
+                if (!mysqli_query($conn, $sql)) {
+                    die("Update task description failed: " . mysqli_error($conn) . $redirect);
+                }
+            }
+            else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
         }
     }
 
     if (isset($_POST["memberEmail"])) {
         $memberemail = $_POST["memberEmail"];
-        if (isset($_POST["updatedPermissionValue"])) {
-            $memberpermission = $_POST["updatedPermissionValue"];
+        $user = $_POST["user"];
 
-            $sql = "UPDATE permissions_table SET permission_type='$memberpermission' WHERE user_email='$memberemail'";
-            if (!mysqli_query($conn, $sql)) {
-                die("Update member failed: " . mysqli_error($conn) . $redirect);
-            }
-        }
-        else {
-            $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$memberemail'";
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND permission_type='Owner'";
 
-            $result = mysqli_query($conn, $sql);
-            if ($result) {
-                if (mysqli_num_rows($result) == 0) {
-                    $memberpermission = $_POST["permissionValue"];
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                if (isset($_POST["updatedPermissionValue"])) {
+                    $memberpermission = $_POST["updatedPermissionValue"];
 
-                    if ($memberpermission == 1) $memberpermission = "Editor";
-                    else $memberpermission = "Viewer";
-
-                    $sql = "INSERT INTO permissions_table (project_id, user_email, permission_type) VALUES ('$id', '$memberemail', '$memberpermission')";
+                    $sql = "UPDATE permissions_table SET permission_type='$memberpermission' WHERE user_email='$memberemail'";
                     if (!mysqli_query($conn, $sql)) {
-                        die("Add member failed: " . mysqli_error($conn) . $redirect);
+                        die("Update member failed: " . mysqli_error($conn) . $redirect);
                     }
                 }
+                else {
+                    $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$memberemail'";
+
+                    $result = mysqli_query($conn, $sql);
+                    if ($result) {
+                        if (mysqli_num_rows($result) == 0) {
+                            $memberpermission = $_POST["permissionValue"];
+
+                            if ($memberpermission == 1) $memberpermission = "Editor";
+                            else $memberpermission = "Viewer";
+
+                            $sql = "INSERT INTO permissions_table (project_id, user_email, permission_type) VALUES ('$id', '$memberemail', '$memberpermission')";
+                            if (!mysqli_query($conn, $sql)) {
+                                die("Add member failed: " . mysqli_error($conn) . $redirect);
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                echo "<script>alert('Only project owner can set permissions!')</script>";
             }
         }
     }
 
     if (isset($_POST["deletedTask"])) {
         $taskid = $_POST["deletedTask"];
-        $sql = "DELETE FROM tasks_table WHERE task_id='$taskid'";
+        $user = $_POST["user"];
 
-        if (!mysqli_query($conn, $sql)) {
-            die("Delete task failed: " . mysqli_error($conn) . $redirect);
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "DELETE FROM tasks_table WHERE task_id='$taskid'";
+
+                if (!mysqli_query($conn, $sql)) {
+                    die("Delete task failed: " . mysqli_error($conn) . $redirect);
+                }
+            } else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
         }
     }
 
     if (isset($_POST["updatedTaskStatus"])) {
         $updatetaskstatus = $_POST["updatedTaskStatus"];
         $updatetaskid = $_POST["updatedTaskId"];
+        $user = $_POST["user"];
 
-        $sql = "UPDATE tasks_table SET task_status='$updatetaskstatus' WHERE task_id='$updatetaskid'";
-        if (!mysqli_query($conn, $sql)) {
-            die("Update task status failed: " . mysqli_error($conn) . $redirect);
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "UPDATE tasks_table SET task_status='$updatetaskstatus' WHERE task_id='$updatetaskid'";
+                if (!mysqli_query($conn, $sql)) {
+                    die("Update task status failed: " . mysqli_error($conn) . $redirect);
+                }
+            }
+            else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
         }
     }
 }
@@ -115,7 +169,7 @@ function retrieveTask($category) {
         if (mysqli_num_rows($result) > 0) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'","'.$row['task_description'].'","'.$row['task_status'].'"',");'>", $row['task_name'], "</div>";
+                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'","'.$row['task_description'].'","'.$row['task_status'].'"',");'>", htmlspecialchars($row['task_name']), "</div>";
             }
         }
     }
@@ -218,26 +272,15 @@ function retrievePermission() {
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        textarea{
-            resize: none;
-        }
-        .card-menu {
-            display: none;
-            width: 200px;
-            background-color: #f9f9f9;
-            padding: 20px;
-            position: absolute;
-            z-index: 1;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        }
-
-
-        .card-menu button:hover {
-            background-color: #777;
-        }
     </style>
     <script>
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
+
         function addTask(category) {
+            const user = firebase.auth().currentUser.email;
+
             var existingForms = document.querySelectorAll("#addTaskForm");
             existingForms.forEach(function(form) {
                form.parentNode.removeChild(form);
@@ -275,6 +318,11 @@ function retrievePermission() {
                 inputhidden.value = "Done";
             }
 
+            var inputuser = document.createElement("input");
+            inputuser.type = "hidden";
+            inputuser.name = "user";
+            inputuser.value = user;
+
             var button = document.createElement("input");
             button.type = "button";
             button.value = "Add task";
@@ -286,6 +334,7 @@ function retrievePermission() {
 
             form.appendChild(input);
             form.appendChild(inputhidden);
+            form.appendChild(inputuser);
             form.appendChild(document.createElement("br"));
             form.appendChild(button);
 
@@ -333,7 +382,15 @@ function retrievePermission() {
             inputhidden.name = "deletedTask";
             inputhidden.value = taskid;
 
+            const user = firebase.auth().currentUser.email;
+
+            var inputuser = document.createElement("input");
+            inputuser.type = "hidden";
+            inputuser.name = "user";
+            inputuser.value = user;
+
             form.appendChild(inputhidden);
+            form.appendChild(inputuser);
 
             document.body.appendChild(form);
             document.getElementById('deleteTaskForm').submit();
@@ -364,6 +421,10 @@ function retrievePermission() {
 
         function updateTaskDesc() {
             if ((document.getElementById("taskdescription").value).trim() !== "") {
+                const user = firebase.auth().currentUser.email;
+
+                document.getElementById("updateTaskDescUser").value = user;
+
                 document.getElementById("updateTaskDescForm").submit();
             }
         }
@@ -381,6 +442,13 @@ function retrievePermission() {
             inputhidden.type = "hidden";
             inputhidden.name = "updatedTaskStatus";
 
+            const user = firebase.auth().currentUser.email;
+
+            var inputuser = document.createElement("input");
+            inputuser.type = "hidden";
+            inputuser.name = "user";
+            inputuser.value = user;
+
             if (element === "1") {
                 inputhidden.value = "To Do";
             } else if (element === "2") {
@@ -394,6 +462,7 @@ function retrievePermission() {
 
             form.appendChild(inputhidden);
             form.appendChild(inputhidden2);
+            form.appendChild(inputuser);
 
             document.body.appendChild(form);
 
@@ -406,6 +475,9 @@ function retrievePermission() {
             if ((memberEmail).trim() !== "" && regexEmail.test(memberEmail)) {
                 auth.fetchSignInMethodsForEmail(memberEmail).then((signInMethods) => {
                     if (signInMethods.length > 0) {
+                        const user = firebase.auth().currentUser.email;
+
+                        document.getElementById("addMemberUser").value = user;
                         document.getElementById("addMemberForm").submit();
                     } else {
                         alert("User does not exist!");
@@ -417,8 +489,6 @@ function retrievePermission() {
         }
 
         function updateMember(element, email) {
-            console.log(element.value, email);
-
             var form = document.createElement("form");
             form.id = "updateMemberForm"
             form.method = "post";
@@ -436,46 +506,18 @@ function retrievePermission() {
                 inputhidden.value = "Editor";
             } else inputhidden.value = "Viewer";
 
+            const user = firebase.auth().currentUser.email;
+            var inputuser = document.createElement("input");
+            inputuser.type = "hidden";
+            inputuser.name = "user";
+            inputuser.value = user;
+
             form.appendChild(input);
             form.appendChild(inputhidden);
+            form.appendChild(inputuser);
 
             document.body.appendChild(form);
             document.getElementById('updateMemberForm').submit();
-        }
-
-        // Menu toggle for aaron ;)
-        function toggleCardMenu(element) {
-            var cardMenu = document.getElementById("cardMenu");
-            if (cardMenu.style.display === "none") {
-                cardMenu.style.display = "block";
-                var btn = element;
-                cardMenu.style.top = (btn.offsetTop + btn.offsetHeight) + "px";
-                cardMenu.style.left = btn.offsetLeft + "px";
-            } else {
-                cardMenu.style.display = "none";
-            }
-        }
-
-        function toggleDateCardMenu(element) {
-            var cardMenu = document.getElementById("dateCardMenu");
-            if (cardMenu.style.display === "none") {
-                cardMenu.style.display = "block";
-                var btn = element;
-                cardMenu.style.top = (btn.offsetTop + btn.offsetHeight) + "px";
-                cardMenu.style.left = btn.offsetLeft + "px";
-            } else {
-                cardMenu.style.display = "none";
-            }
-
-        }
-
-        function closeDateCardMenu() {
-            document.getElementById("dateCardMenu").style.display = "none";
-        }
-
-        function closeCardMenu() {
-            var cardMenu = document.getElementById("cardMenu");
-            cardMenu.style.display = "none";
         }
     </script>
 
@@ -502,175 +544,84 @@ function retrievePermission() {
     <a id="timeline" onclick="showSection('timelineSection')">Timeline</a>
     <a id="permission" onclick="showSection('permissionSection')">Invite Collaborators</a>
 </nav>
-
 <!-- Modal popup -->
-<!-- NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEW -->
-
-<div class="modal modal-xl" id="myModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <p id="taskname" class="h2">Task Name</p>
-                <p id="taskstatus">Task ID</p>
-                <input type="button"  onclick="closeModal();" class="btn-close" aria-label="Close">
-            </div>
-            <div class="modal-body">
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div style="display: flex">
+            <div style="flex: 1">
+                <span id="taskname">Task Name</span><span> / </span><span id="taskstatus">Task ID</span><br/>
+                <p/>
                 <?php global $projectname, $id; ?>
-                <div class="row">
-                    <div class="col-md-8">
-                        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $id . '&name=' . $projectname;?>" method="post" id="updateTaskDescForm">
-                            <b>Description</b>
-                            <div class="form-group">
-                                <textarea class="form-control" id="taskdescription" name="taskdesc" placeholder="Add a description..." onclick="showUpdateTaskDesc();" rows="10"></textarea>
-                            </div>
+                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>" method="post" id="updateTaskDescForm">
+                    <b>Description</b><br/>
+                    <textarea id="taskdescription" name="taskdesc" placeholder="Add a description..." onclick="showUpdateTaskDesc();"></textarea><br/>
+                    <input type="hidden" name="taskid" id="formtaskid">
+                    <div id="updateTaskDescription" style="display: none">
+                        <input type="button" value="Save" onclick="hideUpdateTaskDesc(); updateTaskDesc();">
+                        <input type="button" value="Cancel" onclick="hideUpdateTaskDesc();"><p/>
+                        <input type="hidden" id="updateTaskDescUser" name="user">
+                    </div>
+                </form><p/>
+                <b>Child issues</b><input type="button" value="Add subtasks" onclick="showCreateSubTask();">
+                <table>
+                    <tr>
+                        <td>SUBTASK ID</td>
+                        <td>SUBTASK NAME</td>
+                        <td>SUBTASK ASSIGNEE</td>
+                        <td>SUBTASK STATUS</td>
+                    </tr>
+                </table><br/>
+                <div id="createSubTask" style="display: none">
+                    <input type="text" id="subtaskname" placeholder="Add a subtask..."><br/>
+                    <input type="button" value="Create">
+                    <input type="button" value="Cancel" onclick="hideCreateSubTask();">
+                </div>
+            </div>
 
-                            <input type="hidden" name="taskid" id="formtaskid">
-                            <div id="updateTaskDescription" style="display: none; margin-top: 15px">
-                                <input type="button" value="Save" class="btn btn-warning" onclick="hideUpdateTaskDesc(); updateTaskDesc();">
-                                <input type="button" value="Cancel" class="btn btn-warning" onclick="hideUpdateTaskDesc();"><p/>
-                            </div>
-                        </form>
-                        <div>
-                            <b>Child issues</b><input type="button" value="Add subtasks" onclick="showCreateSubTask();">
-                            <table>
-                                <tr>
-                                    <td>SUBTASK ID</td>
-                                    <td>SUBTASK NAME</td>
-                                    <td>SUBTASK ASSIGNEE</td>
-                                    <td>SUBTASK STATUS</td>
-                                </tr>
-                            </table><br/>
-                            <div id="createSubTask" style="display: none;">
-                                <input type="text" id="subtaskname" placeholder="Add a subtask..."><br/>
-                                <input type="button" value="Create">
-                                <input type="button" value="Cancel" onclick="hideCreateSubTask();">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4" style="border: black">
-                        <div class="align-items-center" style="flex: 2;">
-                            <div>
-                                <p>Modify</p>
-                                <div>
-                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start"  value="Assignee" onclick="toggleCardMenu(this)">
-                                    <!-- Card menu for Assignee (Aaron) -->
-                                    <div id="cardMenu" class="card-menu" style="width: auto" >
-                                        <input type="button"  onclick="closeCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right">
-                                        <h5 class="card-title"></h5>
-                                        <p class="card-text">Choose members to work on this task.</p>
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">Members</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>Mark</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Jacob</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2">Larry the Bird</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <input type="button"  class="btn btn-primary" style="width: 100%;" value="+ Add">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div style="margin-top: 10px;">
-                                <div style="margin-top: 10px;">
-                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start" value="Dates" onclick="toggleDateCardMenu(this)">
-                                    <!-- Card menu for Dates -->
-                                    <div id="dateCardMenu" class="card-menu" style="width: auto; display: none;">
-                                        <input type="button" onclick="closeDateCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right;">
-                                        <h5 class="card-title">Dates</h5>
-                                        <p class="card-text">Here you can manage dates and deadlines.</p>
-                                        <div id="scheduleForm">
-                                            <div style="display: flex; flex-direction: row;">
-                                                <div style="margin-right: 20px;">
-                                                    <label for="dateInput">Start Date:</label>
-                                                    <input type="date" id="dateInput" name="dateInput" onkeydown="return false;">
-                                                </div>
-                                                <div style="margin-right: 20px;">
-                                                    <label for="dateInput2">End Date:</label>
-                                                    <input type="date" id="dateInput2" name="dateInput" onkeydown="return false;">
-                                                    <input type="time" id="timeInput" name="timeInput" onkeydown="return false;">
-                                                </div>
-                                                <div>
-                                                    <label for="selectDueStatus">Remind me:</label>
-                                                    <select class="due-select" id="selectDueStatus">
-                                                        <option value="1">No Reminder</option>
-                                                        <option value="2">10 mins</option>
-                                                        <option value="3">1 hour</option>
-                                                        <option value="4">4 hour</option>
-                                                        <option value="5">1 day</option>
-                                                        <option value="5">2 days</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <input type="button" id="scheduleButton" class="btn btn-primary" style="width: 100%;" value="Schedule" onclick="displaySchedule()">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <p>Status</p>
-                            <select class="form-select" id="selectTaskStatus" aria-label="Default select example">
-                                <option value="1">To Do</option>
-                                <option value="2">In Progress</option>
-                                <option value="3">Done</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <b>Modify</b><br/>
+                <input type="button" value="Assignee"><br/>
+                <input type="button" value="Dates"><p/>
+                <b>Status</b><br/>
+                <select id="selectTaskStatus">
+                    <option value="1">To Do</option>
+                    <option value="2">In Progress</option>
+                    <option value="3">Done</option>
+                </select><p/>
+                <input type="button" value="Delete Task" id="deleteTask">
             </div>
-            <div class="modal-footer">
-                <div style="margin-top: 15px;">
-                    <input type="button" class="btn btn-danger" value="Delete Task" id="deleteTask">
+
+            <section class="calendar" id="calendarSection" style="display: none;">
+                <!-- Calendar content goes here -->
+                <p/><b>Select Start and End Dates</b>
+                <div id="scheduleForm">
+                    <label for="dateInput">Start Date:</label>
+                    <input type="date" id="dateInput" name="dateInput" onkeydown="return false;">
+
+                    <label for="dateInput2">End Date:</label>
+                    <input type="date" id="dateInput2" name="dateInput" onkeydown="return false;">
+
+                    <button id="scheduleButton" onclick="displaySchedule()">Schedule</button>
                 </div>
-            </div>
+
+                <div id="scheduleDisplay"></div>
+            </section>
+
+            <script>
+                function displaySchedule() {
+                    var selectedDate = document.getElementById('dateInput').value;
+                    var selectedDate2 = document.getElementById('dateInput2').value;
+                    var scheduleDisplay = document.getElementById('scheduleDisplay');
+                    scheduleDisplay.innerHTML = `<p>Schedule for ${selectedDate} to ${selectedDate2}</p>`;
+
+                    // Add your logic to display the schedule based on the selected date
+                    // You can fetch data from the server, show events, etc.
+                }
+            </script>
         </div>
     </div>
 </div>
-
-
-
-
-<section class="calendar" id="calendarSection" style="display: none;">
-    <!-- Calendar content goes here -->
-    <p/><b>Select Start and End Dates</b>
-    <div id="scheduleForm">
-        <label for="dateInput">Start Date:</label>
-        <input type="date" id="dateInput" name="dateInput" onkeydown="return false;">
-
-        <label for="dateInput2">End Date:</label>
-        <input type="date" id="dateInput2" name="dateInput" onkeydown="return false;">
-
-        <button id="scheduleButton" onclick="displaySchedule()">Schedule</button>
-    </div>
-
-    <div id="scheduleDisplay"></div>
-</section>
-
-<script>
-    function displaySchedule() {
-        var selectedDate = document.getElementById('dateInput').value;
-        var selectedDate2 = document.getElementById('dateInput2').value;
-        var scheduleDisplay = document.getElementById('scheduleDisplay');
-        scheduleDisplay.innerHTML = `<p>Schedule for ${selectedDate} to ${selectedDate2}</p>`;
-
-        // Add your logic to display the schedule based on the selected date
-        // You can fetch data from the server, show events, etc.
-    }
-</script>
-
 
 <section id="projectBoardSection">
     <div class="column" id="todo">
@@ -703,6 +654,7 @@ function retrievePermission() {
                 <?php global $projectname, $id; ?>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>" method="post" id="addMemberForm" onsubmit="return false;">
                     <input type="email" placeholder="Email address" id="memberEmail" name="memberEmail">
+                    <input type="hidden" name="user" id="addMemberUser">
                     <select style="width: auto" name="permissionValue">
                         <option selected value="1">Editor</option>
                         <option value="2">Viewer</option>
@@ -712,9 +664,6 @@ function retrievePermission() {
             </td>
         </tr>
     </table>
-
-
-
 </section>
 
 <section id="timelineSection" style="display: none">
