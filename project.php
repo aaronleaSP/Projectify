@@ -162,6 +162,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 function retrieveTask($category) {
     global $conn, $id;
+    static $invokedBefore = false;
+
     $sql = "SELECT * FROM tasks_table WHERE project_id = '$id' AND task_status = '$category'";
 
     $result = mysqli_query($conn, $sql);
@@ -169,7 +171,21 @@ function retrieveTask($category) {
         if (mysqli_num_rows($result) > 0) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'","'.$row['task_description'].'","'.$row['task_status'].'"',");'>", htmlspecialchars($row['task_name']), "</div>";
+                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'","'.$row['task_description'].'","'.$row['task_status'].'","'.$row['assignee_email'].'"',");'>", htmlspecialchars($row['task_name']), "</div>";
+            }
+        }
+    }
+
+    if (!$invokedBefore) {
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id'";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            $invokedBefore = true;
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<span class='assign' style='display: none;'>" . $row['user_email'] . "</span>";
+                }
             }
         }
     }
@@ -358,7 +374,7 @@ function retrievePermission() {
             document.getElementById(category).appendChild(form);
         }
 
-        function modifyTask(taskid, taskname, taskdesc, taskstatus) {
+        function modifyTask(taskid, taskname, taskdesc, taskstatus, assigneeEmail) {
             var modal = document.getElementById('myModal');
             document.getElementById('taskname').innerHTML = "<b>" + taskname + "</b>";
             document.getElementById('taskstatus').innerText = taskstatus;
@@ -367,6 +383,7 @@ function retrievePermission() {
             } else document.getElementById('taskdescription').value = "";
 
             document.getElementById('formtaskid').value = taskid;
+            document.getElementById("assigneeEmail").value = assigneeEmail;
 
             document.getElementById('deleteTask').onclick = function() {
                 deleteTask(taskid);
@@ -539,8 +556,22 @@ function retrievePermission() {
             document.getElementById('updateMemberForm').submit();
         }
 
+        let populatedList = false;
         // Menu toggle for aaron ;)
         function toggleCardMenu(element) {
+            if (!populatedList) {
+                populatedList = true;
+                var assigneesList = document.querySelectorAll('.assign');
+
+                assigneesList.forEach(element => {
+                    let trElement = document.createElement('tr');
+                    let tdElement = document.createElement('td');
+                    tdElement.textContent = element.textContent;
+                    trElement.appendChild(tdElement);
+                    document.getElementById('assigneeTable').appendChild(trElement);
+                });
+            }
+
             var cardMenu = document.getElementById("cardMenu");
             if (cardMenu.style.display === "none") {
                 cardMenu.style.display = "block";
@@ -618,6 +649,7 @@ function retrievePermission() {
                             <b>Description</b>
                             <div class="form-group">
                                 <input type="hidden" id="updateTaskDescUser" name="user">
+                                <input type="hidden" id="assigneeEmail" name="assigneeEmail">
                                 <textarea class="form-control" id="taskdescription" name="taskdesc" placeholder="Add a description..." onclick="showUpdateTaskDesc();" rows="10"></textarea>
                             </div>
 
@@ -661,16 +693,7 @@ function retrievePermission() {
                                                 <th scope="col">Members</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>Mark</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Jacob</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2">Larry the Bird</td>
-                                            </tr>
+                                            <tbody id="assigneeTable">
                                             </tbody>
                                         </table>
                                         <input type="button"  class="btn btn-primary" style="width: 100%;" value="+ Add">
@@ -830,13 +853,15 @@ function retrievePermission() {
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["taskdesc"])) {
+        $assigneeEmail = $_POST["assigneeEmail"];
+
         $sql = "SELECT * FROM tasks_table WHERE task_id='$taskid'";
 
         $result = mysqli_query($conn, $sql);
         if ($result) {
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<script>modifyTask(", $row['task_id'] . ',"' . $row['task_name'] . '","' . $row['task_description'] . '","' . $row['task_status'] . '"', ");</script>";
+                    echo "<script>modifyTask(", $row['task_id'] . ',"' . $row['task_name'] . '","' . $row['task_description'] . '","' . $row['task_status'] . '","' . $assigneeEmail .'"', ");</script>";
                 }
             }
         }
