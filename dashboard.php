@@ -345,7 +345,7 @@ function getAllProjects()
     }
 </script>
 
-<section id="addProjectSection" style="margin-top: 275px">
+<section id="addProjectSection" style="margin-top: 275px; display: none">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -388,7 +388,7 @@ function getAllProjects()
     }
 </script>
 
-<section id="allProjectsSection" style="margin-top: 225px;">
+<section id="allProjectsSection" style="margin-top: 225px; display: none   ">
     <div class="container">
         <div class="card">
             <div class="card-body">
