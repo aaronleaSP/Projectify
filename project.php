@@ -418,6 +418,8 @@ function retrievePermission() {
             modal.style.display = "none";
             hideUpdateTaskDesc();
             hideCreateSubTask();
+            closeCardMenu();
+            closeDateCardMenu();
         }
 
         function showCreateSubTask() {
@@ -605,7 +607,7 @@ function retrievePermission() {
         <div class="modal-content">
             <div class="modal-header">
                 <p id="taskname" class="h2">Task Name</p>
-                <p id="taskstatus">Task ID</p>
+                <p id="taskstatus" style="margin-left: 5px;">Task ID</p>
                 <input type="button"  onclick="closeModal();" class="btn-close" aria-label="Close">
             </div>
             <div class="modal-body">
@@ -647,7 +649,7 @@ function retrievePermission() {
                             <div>
                                 <p>Modify</p>
                                 <div>
-                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start"  value="Assignee" onclick="toggleCardMenu(this)">
+                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start"  value="Assignee" onclick="toggleCardMenu(this); closeDateCardMenu();">
                                     <!-- Card menu for Assignee (Aaron) -->
                                     <div id="cardMenu" class="card-menu" style="width: auto" >
                                         <input type="button"  onclick="closeCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right">
@@ -679,7 +681,7 @@ function retrievePermission() {
                         <div>
                             <div style="margin-top: 10px;">
                                 <div style="margin-top: 10px;">
-                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start" value="Dates" onclick="toggleDateCardMenu(this)">
+                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start" value="Dates" onclick="toggleDateCardMenu(this); closeCardMenu();">
                                     <!-- Card menu for Dates -->
                                     <div id="dateCardMenu" class="card-menu" style="width: auto; display: none;">
                                         <input type="button" onclick="closeDateCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right;">
