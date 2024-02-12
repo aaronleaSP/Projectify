@@ -208,7 +208,7 @@ function getAllProjects()
     </div>
 </nav>-->
 
-<section class="project-management" id="projectManagementSection" style="margin-top: 150px" >
+<section class="project-management" id="projectManagementSection">
     <div class="container-xxl">
         <div class="row">
             <div class="col-md mb-4" >
@@ -349,7 +349,7 @@ function getAllProjects()
     }
 </script>
 
-<section id="addProjectSection" style="margin-top: 275px; display: none">
+<section id="addProjectSection" style="display: none;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -392,11 +392,11 @@ function getAllProjects()
     }
 </script>
 
-<section id="allProjectsSection" style="margin-top: 225px; display: none   ">
+<section id="allProjectsSection" style="display: none;">
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title">All Projects</h1>
+                <h1 style="margin-bottom: 25px" class="card-title">All Projects</h1>
                 <?php getAllProjects(); ?>
             </div>
         </div>
