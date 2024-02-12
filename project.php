@@ -654,7 +654,7 @@ function retrievePermission() {
                                     <div id="cardMenu" class="card-menu" style="width: auto; display: none;" >
                                         <input type="button"  onclick="closeCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right">
                                         <h5 class="card-title"></h5>
-                                        <p class="card-text">Choose members to work on this task.</p>
+                                        <p class="card-text">Assign a member to work on this task.</p>
                                         <table class="table table-hover">
                                             <thead>
                                             <tr>
@@ -701,12 +701,12 @@ function retrievePermission() {
                                                 <div>
                                                     <label for="selectDueStatus">Remind me:</label>
                                                     <select class="due-select" id="selectDueStatus">
-                                                        <option value="1">No Reminder</option>
-                                                        <option value="2">10 mins</option>
-                                                        <option value="3">1 hour</option>
-                                                        <option value="4">4 hour</option>
-                                                        <option value="5">1 day</option>
-                                                        <option value="5">2 days</option>
+                                                        <option value="1">None</option>
+                                                        <option value="2">At time of due date</option>
+                                                        <option value="3">5 Minutes before</option>
+                                                        <option value="4">15 Minutes before</option>
+                                                        <option value="5">1 Hour before</option>
+                                                        <option value="5">1 Day before</option>
                                                     </select>
                                                 </div>
                                             </div>
