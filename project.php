@@ -417,6 +417,9 @@ function retrievePermission() {
             input.name = "task";
             input.type = "text";
             input.placeholder = "Enter a task..."
+            input.className = "form-control"
+            input.style.display = "inline"
+            input.style.marginBottom ="5px"
             input.onkeydown = function(event) {
                 if (event.key === 'Enter') event.preventDefault();
             }
@@ -440,7 +443,8 @@ function retrievePermission() {
 
             var button = document.createElement("input");
             button.type = "button";
-            button.value = "Add task";
+            button.value = "+ Add task";
+            button.className ="btn btn-primary"
             button.onclick = function() {
                 if ((input.value).trim() !== "") {
                     document.getElementById('addTaskForm').submit();
