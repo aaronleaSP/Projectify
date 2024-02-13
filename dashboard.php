@@ -68,19 +68,24 @@ function getAllProjects()
             while ($row = mysqli_fetch_assoc($result)) {
 
                 echo "<div class='col-md mb-4'>";
-                echo "<div class='card shadow-sm mb-3>";
+                echo "<div class='card border-0 shadow mb-3'>";
                 echo "<div class='card-body'>";
-                echo "<h3 class='card-title' style='text-align: left; '>" . $row['project_name'] . "</h3>";
-                echo "<p class='card-text' style='text-align: left' margin-bottom: 20px'>" . $row['project_desc'] . "</p>";
-                echo "<br>";
-                echo "<div class='d-flex justify-content-between align-items-center'>";
-                echo "<div class='btn-group'>";
-                echo "<a href='./project.php?id=" . $row['project_id'] . "&name=" . $row['project_name'] . "' class='btn btn-sm btn-outline-secondary'>View Project</a>";
-                echo "<button class='btn btn-sm btn-outline-danger' onclick='deleteProject(" . $row['project_id'] . ")'>Delete</button>";
+                echo "<h3 class='card-title' style='text-align: left;'>{$row['project_name']}</h3>";
+                echo "<h6 style='text-align: start'>Description:</h6>";
+                echo "<p class='card-text' style='text-align: left; margin-bottom: 20px;'>{$row['project_desc']}</p>";
+                echo "<div class='row'>";
+                echo "<div class='col text-start'>";
+                echo "<a href='./project.php?id={$row['project_id']}&name={$row['project_name']}' class='btn btn-sm btn-primary'>View Project</a>";
+                echo "</div>";
+                echo "<div class='col text-end'>";
+                echo "<button class='btn btn-sm btn-danger' onclick='deleteProject({$row['project_id']})'>Delete</button>";
                 echo "</div>";
                 echo "</div>";
                 echo "</div>";
                 echo "</div>";
+                echo "</div>";
+
+
 
 
             }
@@ -217,24 +222,24 @@ function getAllProjects()
 </head>
 <body>
 <!--Start of NavBar-->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg nav-light bg-light">
     <div class="container-fluid">
         <img src="images/icon.png" alt="Logo" style="height: 50px; align-content: center" onclick="function dashboard() {window.location.href = './dashboard.php'} dashboard();">
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class='navbar-nav'>
-                <li class='nav-item'><a onclick="showSection('projectManagementSection'); closeNotiCardMenu();" class='nav-link'>Project Management</a></li>
-                <li class='nav-item'> <a class='nav-link' onclick="toggleNotiCardMenu(this);">Notifications</a></li>
-                <li class='nav-item'><a onclick="showSection('calendarSection'); closeNotiCardMenu();" class='nav-link'>Calendar</a></li>
+                <li class='nav-item'><b><a onclick="function dashboard() {window.location.href = './dashboard.php'} dashboard();" class='nav-link'  >Project Management</a></li></b>
+                <li class='nav-item'><b> <a class='nav-link' onclick="toggleNotiCardMenu(this);">Notifications</a></li></b>
+                <li class='nav-item'><b> <a onclick="showSection('calendarSection'); closeNotiCardMenu();" class='nav-link'>Calendar</a></li></b>
 
             </ul>
             <div class='d-flex ms-auto' style="align-content: center">
-                <span style="color: black;">Welcome, <span id="user"></span></span>
+                <!-- <span style="color: black;">Welcome, <span id="user"></span></span>-->
             </div>
 
             <form class='d-flex ms-auto'>
             </form>
-            <input type="button" value="Log out" id="signout" onclick="signOut()">
+            <input type="button" class="btn btn-dark" value="Log out" id="signout" onclick="signOut()">
 
         </div>
     </div>
@@ -258,15 +263,15 @@ function getAllProjects()
 
 <!-- Start of Dashboard -->
 <section class="project-management" id="projectManagementSection">
-    <div class="container-xxl">
+    <div class="container">
         <div class="row">
 
             <div class="col-md mb-4" >
                 <div class="card">
                     <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
-                    <div class="card-body">
-                        <h5 class="card-title">All Projects</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <div class="card-body" >
+                        <h5 class="card-title" style="text-align: left">All Projects</h5>
+                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         <a onclick="getAllProjects();" href="#" class="btn btn-primary">All projects</a>
                     </div>
                 </div>
@@ -275,8 +280,8 @@ function getAllProjects()
                 <div class="card">
                     <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
                     <div class="card-body">
-                        <h5 class="card-title">Add Projects</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <h5 class="card-title" style="text-align: left">Add Projects</h5>
+                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         <a onclick="showSection('addProjectSection'); fillUserDetails();" href="#" class="btn btn-primary">Add project</a>
                     </div>
                 </div>
@@ -287,8 +292,8 @@ function getAllProjects()
                 <div class="card">
                     <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
                     <div class="card-body">
-                        <h5 class="card-title">Projects to do</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <h5 class="card-title" style="text-align: left">Projects to do</h5>
+                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         <a href="not_started.php" class="btn btn-primary">All projects</a>
                     </div>
                 </div>
@@ -297,8 +302,8 @@ function getAllProjects()
                 <div class="card">
                     <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
                     <div class="card-body">
-                        <h5 class="card-title">Projects in progress</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <h5 class="card-title" style="text-align: left">Projects in progress</h5>
+                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         <a href="in_progress.php" class="btn btn-primary">Add project</a>
                     </div>
                 </div>
@@ -307,8 +312,8 @@ function getAllProjects()
                 <div class="card">
                     <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
                     <div class="card-body">
-                        <h5 class="card-title">Projects in progress</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <h5 class="card-title" style="text-align: left">Projects in progress</h5>
+                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         <a href="all_project.php" class="btn btn-primary">Add project</a>
                     </div>
                 </div>
@@ -468,11 +473,10 @@ function getAllProjects()
 </section>
 
 <footer>
-
-    <a href="about_us.html">About Us</a>
-    <a href="project_intro.html">Project Introduction</a>
-
+                    <li><a class="text-info" href="about_us.html">About Us</a></li>
+                    <li><a class="text-info" href="project_intro.html">Project Introduction</a></li>
 </footer>
+
 
 <script>
     function showSection(sectionId) {
@@ -497,7 +501,7 @@ function getAllProjects()
         </div>
     </div>
 </div>
-<input type="button" value="Add Notification" onclick="addNotification()"> <!-- Input button to add notification -->
+<!-- input type="button" value="Add Notification" onclick="addNotification()">  Input button to add notification -->
 <!-- Define a template for the notification card -->
 <div class="notification-container">
     <template id="notificationTemplate">
@@ -555,31 +559,6 @@ function getAllProjects()
 
 <!-- End of Notification popup -->
 
-<!-- Pie Chart -->
-
-<script>
-    // Dummy data for the pie chart
-    var pieData = {
-        labels: ["To Do", "In Progress", "Finished"],
-        datasets: [{
-            data: [30, 40, 30], // Dummy values
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.7)',
-                'rgba(54, 162, 235, 0.7)',
-                'rgba(75, 192, 192, 0.7)'
-            ]
-        }]
-    };
-
-    // Get the context of the canvas element we want to select
-    var ctx = document.getElementById("projectStatusChart").getContext('2d');
-
-    // Create the pie chart
-    var myPieChart = new Chart(ctx, {
-        type: 'pie',
-        data: pieData
-    });
-</script>
 
 </body>
 </html>

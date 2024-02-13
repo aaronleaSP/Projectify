@@ -238,7 +238,9 @@ function retrieveTask($category) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<div class='card' id='", "card".$row['task_id']. "'", "onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'",'. htmlspecialchars(json_encode($row['task_description']), ENT_QUOTES).',"'.$row['task_status'].'","'.$row['assignee_email'].'"',
-                ");'><span>", htmlspecialchars($row['task_name']), "</span><span style='text-align: left;' id='taskDate", $row['task_id'], "'></span></div>";
+                ");'><div style='text-align: left;'><strong>", htmlspecialchars($row['task_name']), "</strong></div><div style='text-align: left;' id='taskDate", $row['task_id'], "'></div></div>";
+
+
 
                 $sql2 = "SELECT * FROM reminders_table WHERE project_id = '$id' AND task_id='" .$row['task_id']. "'";
 
@@ -827,10 +829,23 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
     </div>
 </nav>
 
-<nav>
-    <a class="active" id="projectBoard" onclick="showSection('projectBoardSection')">Project Board</a>
-    <a id="timeline" onclick="showSection('timelineSection')">Timeline</a>
-    <a id="permission" onclick="showSection('permissionSection')">Invite Collaborators</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" id="projectBoard" onclick="showSection('projectBoardSection')">Project Board</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="timeline" onclick="showSection('timelineSection')">Timeline</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="permission" onclick="showSection('permissionSection')">Invite Collaborators</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>
 
 <!-- Modal popup -->
@@ -978,19 +993,19 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
         <h2>To Do</h2>
         <?php retrieveTask("To Do"); ?>
         <!-- Add card button -->
-        <input type="button" id="buttontodo" value="Add a task" onclick="addTask('todo');">
+        <input type="button" class="btn btn-primary" id="buttontodo" value=" + Add a task" onclick="addTask('todo');">
     </div>
     <div class="column" id="inprogress">
         <h2>In Progress</h2>
         <?php retrieveTask("In Progress"); ?>
         <!-- Add card button -->
-        <input type="button" id="buttoninprogress" value="Add a task" onclick="addTask('inprogress');">
+        <input type="button"  class="btn btn-primary" id="buttoninprogress" value="+ Add a task" onclick="addTask('inprogress');">
     </div>
     <div class="column" id="done">
         <h2>Done</h2>
         <?php retrieveTask("Done"); ?>
         <!-- Add card button -->
-        <input type="button" id="buttondone" value="Add a task" onclick="addTask('done')">
+        <input type="button" class="btn btn-primary" id="buttondone" value="+ Add a task" onclick="addTask('done')">
     </div>
 </section>
 
