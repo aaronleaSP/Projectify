@@ -188,9 +188,9 @@ function retrievePermission() {
                 if ($row['permission_type'] == "Owner") {
                     echo "<td><b>Owner</b></td>";
                 } else if ($row['permission_type'] == "Editor") {
-                    echo "<td><label><select onchange='updateMember(this, ", '"'.$row['user_email'].'"',");'>", "<option value='1' selected>Editor</option><option value='2'>Viewer</option></select></label></td></tr>";
+                    echo "<td><label><select class='form-select' onchange='updateMember(this, ", '"'.$row['user_email'].'"',");'>", "<option value='1' selected>Editor</option><option value='2'>Viewer</option></select></label></td></tr>";
                 } else {
-                    echo "<td><label><select onchange='updateMember(this, ", '"'.$row['user_email'].'"',");'>", "<option value='1'>Editor</option><option value='2' selected>Viewer</option></select></label></td></tr>";
+                    echo "<td><label><select class='form-select' onchange='updateMember(this, ", '"'.$row['user_email'].'"',");'>", "<option value='1'>Editor</option><option value='2' selected>Viewer</option></select></label></td></tr>";
                 }
             }
             echo "</table>";
@@ -578,20 +578,28 @@ function retrievePermission() {
     <link rel="stylesheet" href="styles/dashboard.css">
 </head>
 <body>
-<header>
-    <div class="logo">
-        <a href="dashboard.php">
-            <img src="images/icon.png" alt="Logo">
-        </a>
+<!--Start of NavBar-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <img src="images/icon.png" alt="Logo" style="height: 50px; align-content: center">
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class='navbar-nav'>
+                <li class='nav-item'><a href='#' class='nav-link'>Project Management</a></li>
+                <li class='nav-item'> <a href='#' class='nav-link' onclick="toggleNotiCardMenu(this); closeDateCardMenu();">Notifications</a></li>
+
+            </ul>
+            <div class='d-flex ms-auto' style="align-content: center">
+                <span style="color: black;">Welcome, <span id="user"></span></span>
+            </div>
+
+            <form class='d-flex ms-auto'>
+            </form>
+            <input type="button" value="Log out" id="signout" onclick="signOut()">
+
+        </div>
     </div>
-    <div class="welcome">
-        Welcome, <span id="user"></span>
-    </div>
-    <div class="right-section">
-        <img src="images/notification.png" alt="notification" id="notification">
-        <input type="button" value="Log out" id="signout" onclick="signOut()">
-    </div>
-</header>
+</nav>
 
 <nav>
     <a class="active" id="projectBoard" onclick="showSection('projectBoardSection')">Project Board</a>
@@ -789,25 +797,30 @@ function retrievePermission() {
 
 <section class="permission" id="permissionSection" style="display: none;">
     <!-- Permission content goes here -->
-    <h1>Invite Collaborators</h1>
-    <?php retrievePermission(); ?>
-    <table>
-        <tr>
-            <td colspan="3">
-                <?php global $projectname, $id; ?>
+    <div class="container mt-3">
+        <h1>Invite Collaborators</h1>
+        <?php retrievePermission(); ?>
+        <div class="row">
+            <div class="col-md-6" style="margin-left: auto; margin-right: auto; margin-top: 15px;">
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']), '?id=' , $id , '&name=' , $projectname;?>" method="post" id="addMemberForm" onsubmit="return false;">
-                    <input type="email" placeholder="Email address" id="memberEmail" name="memberEmail">
-                    <input type="hidden" name="user" id="addMemberUser">
-                    <select style="width: auto" name="permissionValue">
-                        <option selected value="1">Editor</option>
-                        <option value="2">Viewer</option>
-                    </select>
-                    <input type="button" value="Add member" onclick="addMember();">
+
+                    <div class="input-group mb-3 center"  >
+                        <input type="email" class="form-control" placeholder="Email address" id="memberEmail" name="memberEmail">
+                        <input type="hidden" name="user" id="addMemberUser">
+                        <select class="form-select" style="width: auto" name="permissionValue">
+                            <option selected value="1">Editor</option>
+                            <option value="2">Viewer</option>
+                        </select>
+                        <button class="btn btn-primary" type="button" onclick="addMember();">Add member</button>
+                    </div>
+
                 </form>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+    </div>
 </section>
+
+
 
 <section id="timelineSection" style="display: none">
     Timeline Section

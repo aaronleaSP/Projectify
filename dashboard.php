@@ -165,8 +165,35 @@ function getAllProjects()
              height: 100vh;
 
          }
+        .card-menu {
+            display: none;
+            width: 200px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            position: absolute;
+            z-index: 1;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+
+        .card-menu button:hover {
+            background-color: #777;
+        }
+        .notification-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .notification-card {
+            width: 300px; /* Fixed width */
+            max-width: 500px; /* Ensures card doesn't exceed viewport width */
+
+        }
+
 
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" href="styles/dashboard.css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
@@ -177,40 +204,50 @@ function getAllProjects()
 
 </head>
 <body>
-<header>
-    <div class="logo">
-        <a onclick="showSection('projectManagementSection')">
-            <img src="images/icon.png" alt="Logo">
-        </a>
-    </div>
-    <div class="welcome">
-        Welcome, <span id="user"></span>
-    </div>
-    <div class="right-section">
-        <img src="images/notification.png" alt="notification" id="notification">
-        <input type="button" value="Log out" id="signout" onclick="signOut()">
-    </div>
-</header>
+<!--Start of NavBar-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <img src="images/icon.png" alt="Logo" style="height: 50px; align-content: center">
 
-<!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <a href='#' class="active" id="projectManagement" onclick="showSection('projectManagementSection')">Project Management</a>
-            <a href='#' id="permission" onclick="showSection('permissionSection')">Permission</a>
-            <a href='#' id="task" onclick="showSection('taskSection')">Task</a>
-            <a href='#' id="calendar" onclick="showSection('calendarSection')">Calendar</a>
-            <a href='#' id="teamMember" onclick="showSection('teamMemberSection')">Team Member</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class='navbar-nav'>
+                <li class='nav-item'><a href='#' class='nav-link'>Project Management</a></li>
+                <li class='nav-item'> <a href='#' class='nav-link' onclick="toggleNotiCardMenu(this); closeDateCardMenu();">Notifications</a></li>
+
+            </ul>
+            <div class='d-flex ms-auto' style="align-content: center">
+                <span style="color: black;">Welcome, <span id="user"></span></span>
+            </div>
+
+            <form class='d-flex ms-auto'>
+            </form>
+            <input type="button" value="Log out" id="signout" onclick="signOut()">
+
         </div>
     </div>
-</nav>-->
+</nav>
 
+<!-- Beginning of a new start
+<section class="project-management" id="projectManagementSection">
+    <div class="container-fluid">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                        class="fas fa-download fa-sm text-white-50"></i> Add Project </a>
+        </div>
+        <div class="row">
+
+        </div>
+    </div>
+
+</section>-->
+<!-- End of Nav Bar-->
+
+<!-- Start of Dashboard -->
 <section class="project-management" id="projectManagementSection">
     <div class="container-xxl">
         <div class="row">
+
             <div class="col-md mb-4" >
                 <div class="card">
                     <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
@@ -257,16 +294,20 @@ function getAllProjects()
                 <div class="card">
                     <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
                     <div class="card-body">
-                        <h5 class="card-title">Finished Projects</h5>
+                        <h5 class="card-title">Projects in progress</h5>
                         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="done.php" class="btn btn-primary">Add project</a>
+                        <a href="all_project.php" class="btn btn-primary">Add project</a>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
+<!-- End of Dashboard-->
 
+
+<!-- Start of wtf is this -->
 <section class="permission" id="permissionSection" style="display: none;">
     <!-- Permission content goes here -->
     <p>Permission Section Content</p>
@@ -348,7 +389,10 @@ function getAllProjects()
         // You can fetch data from the server, show events, etc.
     }
 </script>
+<!-- End of wtf this is-->
 
+
+<!-- Start of Add Projects-->
 <section id="addProjectSection" style="display: none; padding: 20px;">
     <div class="container">
         <div class="row justify-content-center">
@@ -379,7 +423,6 @@ function getAllProjects()
         </div>
     </div>
 </section>
-
 <script>
     function validateAddProject() {
         var projectname = document.getElementById('projectname');
@@ -391,7 +434,10 @@ function getAllProjects()
         }
     }
 </script>
+<!-- End of Add Projects-->
 
+
+<!-- Start of All projects-->
 <section id="allProjectsSection" style="display: none; padding: 20px;">
     <div class="container">
         <div class="card">
@@ -402,6 +448,7 @@ function getAllProjects()
         </div>
     </div>
 </section>
+<!-- End of All projects-->
 
 <script>
     function validateAddProject() {
@@ -442,6 +489,102 @@ function getAllProjects()
         document.getElementById(sectionId).style.display = 'block';
     }
 </script>
+
+
+<!-- Start of Notification popup-->
+<div class="align-items-center" style="flex: 2;">
+    <!-- Card menu for Assignee (Aaron) -->
+    <div id="NoticardMenu" class="card-menu" style="width: auto; display: none;">
+        <input type="button" onclick="closeNotiCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right;">
+        <div class="list-group" style="margin: auto; max-height: 400px; overflow-y: auto;" id="notificationList">
+            <!-- Notification cards will be dynamically added here -->
+        </div>
+    </div>
+</div>
+<input type="button" value="Add Notification" onclick="addNotification()"> <!-- Input button to add notification -->
+<!-- Define a template for the notification card -->
+<div class="notification-container">
+    <template id="notificationTemplate">
+        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start notification-card">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">New Notification</h5>
+                <small>Just now</small>
+            </div>
+            <p class="mb-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut maximus purus vel mi consequat, vitae condimentum quam consequat. Nulla facilisi. Proin hendrerit nisi id mauris hendrerit, nec venenatis orci ultricies. Maecenas condimentum, mauris nec interdum ullamcorper, felis dui eleifend magna, ac consectetur tortor velit ac est. Duis eget nunc ut velit varius gravida in at justo. Nulla facilisi. Donec hendrerit mauris eget nisi mattis, nec tempus est tempor. Vivamus suscipit, nisi non volutpat laoreet, nibh tortor vehicula lectus, vitae aliquet turpis felis eget risus. Nam id elit sed ligula vulputate congue.</p>
+            <small>Read more.</small>
+        </a>
+    </template>
+</div>
+
+
+
+
+<script>
+    function addNotification() {
+        var notificationList = document.getElementById("notificationList");
+        var notificationTemplate = document.getElementById("notificationTemplate");
+
+        // Clone the template content
+        var notificationCard = notificationTemplate.content.cloneNode(true);
+
+        // Append the new notification card to the notification list
+        notificationList.appendChild(notificationCard);
+    }
+
+    // Menu toggle for aaron ;)
+    function toggleNotiCardMenu(element) {
+        var cardMenu = document.getElementById("NoticardMenu");
+        var notificationList = document.getElementById("notificationList");
+
+        if (cardMenu.style.display === "none") {
+            if (notificationList.children.length === 0) {
+                notificationList.innerHTML = "<p>No notifications yet</p>";
+            }
+
+            cardMenu.style.display = "block";
+            var btn = element;
+            cardMenu.style.top = (btn.offsetTop + btn.offsetHeight) + "px";
+            cardMenu.style.left = btn.offsetLeft + "px";
+        } else {
+            cardMenu.style.display = "none";
+        }
+    }
+
+    function closeNotiCardMenu() {
+        var cardMenu = document.getElementById("NoticardMenu");
+        cardMenu.style.display = "none";
+    }
+</script>
+
+
+<!-- End of Notification popup -->
+
+<!-- Pie Chart -->
+
+<script>
+    // Dummy data for the pie chart
+    var pieData = {
+        labels: ["To Do", "In Progress", "Finished"],
+        datasets: [{
+            data: [30, 40, 30], // Dummy values
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(75, 192, 192, 0.7)'
+            ]
+        }]
+    };
+
+    // Get the context of the canvas element we want to select
+    var ctx = document.getElementById("projectStatusChart").getContext('2d');
+
+    // Create the pie chart
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: pieData
+    });
+</script>
+
 </body>
 </html>
 
