@@ -298,7 +298,7 @@ function getActiveDay(date){
     const day = new Date(year,month,date);
     const dayName = day.toString().split(" ")[0];
     eventDay.innerHTML = dayName;
-    eventDate.innerHTML = date + "" +months[month]+""+year;
+    eventDate.innerHTML = date + " " + months[month] + " " + year;
 }
 
 //function to show events of that day
@@ -345,6 +345,7 @@ addEventSubmit.addEventListener("click", ()=>{
     //some validations
     if(eventTitle === "" || eventTimeFrom ==="" || eventTimeTo ===""){
         alert("Please fill all the fields");
+        return;
     }
 
     const timeFromArr = eventTimeFrom.split(":");
@@ -352,6 +353,7 @@ addEventSubmit.addEventListener("click", ()=>{
 
     if(timeFromArr.length !== 2 || timeToArr.length !== 2 || timeFromArr[0] >23 || timeFromArr[1]>59 || timeToArr[0] >23||timeToArr[1]>59){
         alert("Invalid Time Format");
+        return;
     }
 
     const timeFrom = convertTime(eventTimeFrom);
