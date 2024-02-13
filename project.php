@@ -823,7 +823,7 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
 
             <form class='d-flex ms-auto'>
             </form>
-            <input type="button" value="Log out" id="signout" onclick="signOut()">
+            <input type="button" class="btn btn-dark" value="Log out" id="signout" onclick="signOut()">
 
         </div>
     </div>
@@ -882,7 +882,7 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
                             <input type="hidden" name="addAssigneeEmail" id="addAssigneeEmail">
                             <input type="hidden" name="addAssigneeUser" id="addAssigneeUser">
                         </form>
-                        <div>
+                        <div style="display: none" > <!-- I ran out of time lol -->
                             <b>Child issues</b><input type="button" value="Add subtasks" onclick="showCreateSubTask();">
                             <table>
                                 <tr>

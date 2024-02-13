@@ -306,7 +306,7 @@ function getAllProjects()
                     <img class="card-img-top" src="images/cloudcard2.jpg" alt="Card image cap" style="height: 500px; object-fit: cover"" >
                     <div class="card-body">
                         <h5 class="card-title" style="text-align: left">Add Projects</h5>
-                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p class="card-text" style="text-align: left">Add your projects here to begin your projectify journey</p>
                         <a onclick="showSection('addProjectSection'); fillUserDetails();" href="#" class="btn btn-primary">Add project</a>
                     </div>
                 </div>
@@ -465,7 +465,7 @@ function getAllProjects()
     </ul>
 </section>
 
-<footer  style="background-color: white; " >
+<footer  style="background-color: white; ">
     <li><a class="text-info" href="about_us.html">About Us</a></li>
     <li><a class="text-info" href="project_intro.html">Project Introduction</a></li>
 </footer>
