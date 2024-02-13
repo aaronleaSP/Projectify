@@ -219,7 +219,7 @@ function getAllProjects()
 <!--Start of NavBar-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <img src="images/icon.png" alt="Logo" style="height: 50px; align-content: center">
+        <img src="images/icon.png" alt="Logo" style="height: 50px; align-content: center" onclick="function dashboard() {window.location.href = './dashboard.php'} dashboard();">
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class='navbar-nav'>
