@@ -82,19 +82,24 @@ function getAllProjects()
             while ($row = mysqli_fetch_assoc($result)) {
 
                 echo "<div class='col-md mb-4'>";
-                echo "<div class='card shadow-sm mb-3>";
+                echo "<div class='card border-0 shadow mb-3'>";
                 echo "<div class='card-body'>";
-                echo "<h3 class='card-title' style='text-align: left; '>" . $row['project_name'] . "</h3>";
-                echo "<p class='card-text' style='text-align: left' margin-bottom: 20px'>" . $row['project_desc'] . "</p>";
-                echo "<br>";
-                echo "<div class='d-flex justify-content-between align-items-center'>";
-                echo "<div class='btn-group'>";
-                echo "<a href='./project.php?id=" . $row['project_id'] . "&name=" . $row['project_name'] . "' class='btn btn-sm btn-outline-secondary'>View Project</a>";
-                echo "<button class='btn btn-sm btn-outline-danger' onclick='deleteProject(" . $row['project_id'] . ")'>Delete</button>";
+                echo "<h3 class='card-title' style='text-align: left;'>{$row['project_name']}</h3>";
+                echo "<h6 style='text-align: start'>Description:</h6>";
+                echo "<p class='card-text' style='text-align: left; margin-bottom: 20px;'>{$row['project_desc']}</p>";
+                echo "<div class='row'>";
+                echo "<div class='col text-start'>";
+                echo "<a href='./project.php?id={$row['project_id']}&name={$row['project_name']}' class='btn btn-sm btn-primary'>View Project</a>";
+                echo "</div>";
+                echo "<div class='col text-end'>";
+                echo "<button class='btn btn-sm btn-danger' onclick='deleteProject({$row['project_id']})'>Delete</button>";
                 echo "</div>";
                 echo "</div>";
                 echo "</div>";
                 echo "</div>";
+                echo "</div>";
+
+
 
 
             }
@@ -245,7 +250,7 @@ function getAllProjects()
 </head>
 <body>
 <!--Start of NavBar-->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg nav-light bg-light">
     <div class="container-fluid">
         <img src="images/icon.png" alt="Logo" style="height: 50px; align-content: center" onclick="function dashboard() {window.location.href = './dashboard.php'} dashboard();">
 
@@ -256,12 +261,12 @@ function getAllProjects()
                 <li class='nav-item'><a onclick="showSection('calendarSection'); closeNotiCardMenu();" class='nav-link'>Calendar</a></li>
             </ul>
             <div class='d-flex ms-auto' style="align-content: center">
-                <span style="color: black;">Welcome, <span id="user"></span></span>
+                <!-- <span style="color: black;">Welcome, <span id="user"></span></span>-->
             </div>
 
             <form class='d-flex ms-auto'>
             </form>
-            <input type="button" value="Log out" id="signout" onclick="signOut()">
+            <input type="button" class="btn btn-dark" value="Log out" id="signout" onclick="signOut()">
 
         </div>
     </div>
@@ -285,62 +290,30 @@ function getAllProjects()
 
 <!-- Start of Dashboard -->
 <section class="project-management" id="projectManagementSection">
-    <div class="container-xxl">
+    <div class="container-fluid">
         <div class="row">
 
-            <div class="col-md mb-4" >
+            <div class="col-md-6 mb-4" >
                 <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
-                    <div class="card-body">
-                        <h5 class="card-title">All Projects</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <img class="card-img-top" src="images/cloudcard.jpg" alt="Card image cap" style="height: 500px; object-fit: cover">
+                    <div class="card-body" >
+                        <h5 class="card-title" style="text-align: left">All Projects</h5>
+                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         <a onclick="getAllProjects();" href="#" class="btn btn-primary">All projects</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md mb-4">
+            <div class="col-md-6 mb-4">
                 <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
+                    <img class="card-img-top" src="images/cloudcard2.jpg" alt="Card image cap" style="height: 500px; object-fit: cover"" >
                     <div class="card-body">
-                        <h5 class="card-title">Add Projects</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <h5 class="card-title" style="text-align: left">Add Projects</h5>
+                        <p class="card-text" style="text-align: left">Add your projects here to begin your projectify journey</p>
                         <a onclick="showSection('addProjectSection'); fillUserDetails();" href="#" class="btn btn-primary">Add project</a>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
-                    <div class="card-body">
-                        <h5 class="card-title">Projects to do</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="not_started.php" class="btn btn-primary">All projects</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
-                    <div class="card-body">
-                        <h5 class="card-title">Projects in progress</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="in_progress.php" class="btn btn-primary">Add project</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
-                    <div class="card-body">
-                        <h5 class="card-title">Projects in progress</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="all_project.php" class="btn btn-primary">Add project</a>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </section>
@@ -494,12 +467,11 @@ function getAllProjects()
     </ul>
 </section>
 
-<footer>
-
-    <a href="about_us.html">About Us</a>
-    <a href="project_intro.html">Project Introduction</a>
-
+<footer  style="background-color: white; ">
+    <li><a class="text-info" href="about_us.html">About Us</a></li>
+    <li><a class="text-info" href="project_intro.html">Project Introduction</a></li>
 </footer>
+
 
 <script>
     function showSection(sectionId) {
