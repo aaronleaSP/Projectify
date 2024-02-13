@@ -19,8 +19,28 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.containerSlightOpacity {
+    display: flex;
+    max-width: 800px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    opacity: 0.8;
+}
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2); /* Adjust opacity as needed */
+}
 .image-container {
+    position: relative;
     flex: 1;
+}
+.text-lights {
+    color: #FFFFFF; /* Light gray color */
 }
 
 .image-container img {
@@ -81,6 +101,13 @@ body {
     background-color: cornflowerblue;
     color: #fff;
 }
+.outlined-text {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.btn:hover{
+    transform: translateY(-5px);
+}
 
 .button {
     background-color: palegreen;
@@ -127,4 +154,24 @@ span.buttonText {
     font-weight: bold;
     /* Use the Roboto font that is loaded in the <head> */
     font-family: 'Roboto', sans-serif;
+}
+/*ANIMATION CSS*/
+.fade-in-container {
+    opacity: 0;
+    transform: translateY(20px); /* Initial position below */
+    transition: opacity 1s ease, transform 1s ease; /* Transition for opacity and transform */
+}
+
+.fade-in-container.fade-in {
+    opacity: 1;
+    transform: translateY(0); /* Move to original position */
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0; /* Start from fully transparent */
+    }
+    to {
+        opacity: 1; /* End with fully opaque */
+    }
 }

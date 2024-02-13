@@ -22,9 +22,9 @@ function signUp() {
     let errorMessage = document.getElementById("error-message");
     let textError = document.getElementById("textError");
 
-    let usernameRegex = /^[a-zA-Z0-9\s]+$/;
+    let usernameRegex = /^[a-zA-Z0-9 ]+$/;
 
-    if (usernameRegex.test(username)) {
+    if ((username).trim() !== "" && usernameRegex.test(username)) {
         if (password === confirmpassword) {
             const promise = auth.createUserWithEmailAndPassword(
                 email,

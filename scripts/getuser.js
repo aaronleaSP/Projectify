@@ -21,6 +21,8 @@ firebase.auth().onAuthStateChanged((user) => {
 
         let usertext = document.getElementById("user");
         usertext.innerText = username;
+
+        localStorage.setItem("user", user.email);
     } else {
         window.location.href = "login.html";
     }

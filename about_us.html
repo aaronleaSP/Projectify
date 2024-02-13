@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About us</title>
+    <link rel="stylesheet" href="styles/about_us.css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+<h1 style="font-size: 40px;font-family: Arial,serif; margin-left: 15px;">About Us</h1>
+<div class="accordion-container">
+    <div class="accordion-item">
+
+        <div class="accordion-box" onclick="toggleAccordion(this)">
+            <img src="images/girl.png" alt="girl" >
+            <div class="accordion-text">
+                <div class="accordion-name">Hi~ I'm Jing Jing</div><p></p>
+                <div class="accordion-description">Work on FrontEnd</div>
+            </div>
+            <div class="arrow">&#9654;</div>
+        </div>
+        <div class="accordion-content">
+               <h3>Contribution:</h3>
+                <ul type="disc">
+                    <li>Login and Register Page</li>
+                    <li>Homepage</li>
+                    <li>Permission Page</li>
+                    <li>Task Page</li>
+                    <li>Calendar Page</li>
+                    <Li>Logout</Li>
+                    <li>About us Page</li>
+                    <li>Project Introduction Page</li>
+                    <li>Landing Page</li>
+                </ul>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+
+        <div class="accordion-box" onclick="toggleAccordion(this)">
+            <img src="images/boy1.png" alt="boy1">
+            <div class="accordion-text">
+                <div class="accordion-name">Hi~  I'm Yuan Ming</div><p></p>
+                <div class="accordion-description">Work on FrontEnd</div>
+            </div>
+            <div class="arrow">&#9654;</div>
+        </div>
+        <div class="accordion-content">
+            <!-- Content for the second accordion item goes here -->
+            Content for boy1 image
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <div class="accordion-box" onclick="toggleAccordion(this)">
+            <img src="images/boy2.png" alt="boy2">
+            <div class="accordion-text">
+                <div class="accordion-name">Hello~  I'm Aaron</div><p></p>
+                <div class="accordion-description">Work on Backend</div>
+            </div>
+            <div class="arrow">&#9654;</div>
+        </div>
+        <div class="accordion-content">
+            <h3>Contribution:</h3>
+            <ul type="disc">
+                <li>Login - Firebase and Google Sign In</li>
+                <li>Add / Delete / Retrieve Projects by User</li>
+                <li>Add / Delete / Retrieve Task by Project</li>
+                <li>Modify Task - Set description, dates, status and assignee</li>
+                <li>Permissions handling - Viewer cannot interact with tasks</li>
+                <li>Permissions handling - Only project owner can modify team members and roles</li>
+                <li>Notifications - Simple UI Badge to remind user of expiring tasks</li>
+                <li>Database handling - MySQL queries, table creation, maintenance</li>
+                <li>Integration of team member's code into existing codebase</li>
+                <ul><li>Passing of data into Gantt Chart</li></ul>
+            </ul>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <div class="accordion-box" onclick="toggleAccordion(this)">
+            <img src="images/boy3.png" alt="boy3">
+            <div class="accordion-text">
+                <div class="accordion-name">Hello~  I'm Sean</div><p></p>
+                <div class="accordion-description">Work on FrontEnd</div>
+            </div>
+            <div class="arrow">&#9654;</div>
+        </div>
+        <div class="accordion-content">
+            <li>Used and Implemented Bootstrap</li>
+            <li>CSS Styling For Login and Register Page</li>
+            <li>CSS Styling for Dashboard Page</li>
+            <li>CSS Styling for Modify Task - Set description, dates, status and assignee</li>
+            <li>CSS Styling forPermissions handling - Viewer cannot interact with tasks</li>
+            <li>CSS Styling for Permissions handling - Only project owner can modify team members and roles</li>
+            <li>CSS Styling for Notifications - Simple UI Badge to remind user of expiring tasks</li>
+            <ul><li>CSS Styling for everything</li></ul>
+        </div>
+    </div>
+</div>
+<script src="scripts/about_us.js"></script>
+<div class="iframe-container">
+    <iframe src="map.html" style="position: absolute; width: 99%; height: 100%; border: none;"></iframe>
+</div>
+</body>
+</html>
