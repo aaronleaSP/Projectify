@@ -228,14 +228,16 @@ function retrieveTask($category) {
     global $conn, $id;
     static $invokedBefore = false;
 
-    $sql = "SELECT * FROM tasks_table WHERE project_id = '$id' AND task_status = '$category'";
+    $sql = "SELECT * FROM tasks_table WHERE project_id = '$id' AND task_status = '$category' ORDER BY 
+    (SELECT start_date FROM reminders_table WHERE task_id = tasks_table.task_id LIMIT 1),
+    (SELECT end_date FROM reminders_table WHERE task_id = tasks_table.task_id LIMIT 1); ";
 
     $result = mysqli_query($conn, $sql);
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'",'. htmlspecialchars(json_encode($row['task_description']), ENT_QUOTES).',"'.$row['task_status'].'","'.$row['assignee_email'].'"',
+                echo "<div class='card' id='", "card".$row['task_id']. "'", "onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'",'. htmlspecialchars(json_encode($row['task_description']), ENT_QUOTES).',"'.$row['task_status'].'","'.$row['assignee_email'].'"',
                 ");'><span>", htmlspecialchars($row['task_name']), "</span><span style='text-align: left;' id='taskDate", $row['task_id'], "'></span></div>";
 
                 $sql2 = "SELECT * FROM reminders_table WHERE project_id = '$id' AND task_id='" .$row['task_id']. "'";
@@ -798,6 +800,10 @@ function retrievePermission() {
     <link rel="stylesheet" href="styles/dashboard.css">
 </head>
 <body>
+<?php
+echo "<span id='projectName' style='display: none'>".$projectname."</span>";
+echo "<span id='projectId' style='display: none'>".$id."</span>";
+?>
 <header>
     <div class="logo">
         <a href="dashboard.php">
@@ -816,6 +822,7 @@ function retrievePermission() {
 <nav>
     <a class="active" id="projectBoard" onclick="showSection('projectBoardSection')">Project Board</a>
     <a id="timeline" onclick="showSection('timelineSection')">Timeline</a>
+    <a id="timeline" onclick="showSection('calendarSection')">Calendar</a>
     <a id="permission" onclick="showSection('permissionSection')">Invite Collaborators</a>
 </nav>
 
@@ -1001,8 +1008,32 @@ function retrievePermission() {
     </table>
 </section>
 
-<section id="timelineSection" style="display: none">
-    Timeline Section
+<section id="timelineSection" style="display: none; width: 100%; height: 100%">
+    <div id="iframeOverlay"></div>
+    <iframe id="reactApp" style="position: absolute; width: 100%; height: 100%; border: none;"></iframe>
+    <script>
+        const ipAddress = window.location.hostname;
+        const iframeUrl = `http://${ipAddress}:3000`;
+
+        document.getElementById('reactApp').src = iframeUrl;
+
+        window.addEventListener("message", function(event) {
+            // Check if the message is from a trusted source
+            if (event.origin !== `http://${ipAddress}:3000`) {
+                return;
+            }
+
+            // Check the message data to determine the action
+            if (event.data.key === "clickElement") {
+                showSection('projectBoardSection');
+                var elementToClick = document.getElementById(event.data.value);
+                if (elementToClick) {
+                    elementToClick.click();
+                }
+            }
+        });
+    </script>
+
 </section>
 
 <script>
@@ -1014,36 +1045,176 @@ function retrievePermission() {
 
         // Show the clicked section
         document.getElementById(sectionId).style.display = 'block';
+
+        if (sectionId === 'timelineSection') {
+            if (showtimeline) {
+                var projectName = document.getElementById("projectName").innerText;
+                var projectId = document.getElementById("projectId").innerText;
+
+                document.getElementById('reactApp').contentWindow.postMessage({
+                    key: "task", value: tasks
+                }, 'http://localhost:3000')
+
+                console.log(tasks);
+                document.getElementById('reactApp').contentWindow.postMessage({
+                    key: "projectid",
+                    value: projectId
+                }, 'http://localhost:3000')
+                document.getElementById('reactApp').contentWindow.postMessage({
+                    key: "projectname",
+                    value: projectName
+                }, 'http://localhost:3000')
+            }
+            else {
+                alert("You need to schedule date for at least one task to use timeline!");
+                showSection('projectBoardSection');
+            }
+        }
     }
 
+    var showtimeline;
+
     var reminders = document.querySelectorAll('.reminder');
+    var projectStartDate = null;
+    var projectEndDate = null;
 
-    reminders.forEach(function(reminder) {
-        dates = reminder.innerText.split("#");
+    if (reminders.length === 0) {
+        showtimeline = false;
+    } else {
+        showtimeline = true;
 
-        var formattedDate = "";
+        reminders.forEach(function (reminder) {
+            dates = reminder.innerText.split("#");
 
-        for (let i = 0; i < 2; i++) {
-            var date = new Date(dates[i]);
+            // Parse the start and end dates
+            var startDate = new Date(dates[0]);
+            var endDate = new Date(dates[1]);
 
-            var day = date.getDate();
-            var monthIndex = date.getMonth();
+            // Update earliest start date
+            if (!projectStartDate || startDate < projectStartDate) {
+                projectStartDate = startDate;
+            }
 
-            var months = [
-                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-            ];
+            // Update latest end date
+            if (!projectEndDate || endDate > projectEndDate) {
+                projectEndDate = endDate;
+            }
 
-            formattedDate += day + ' ' + months[monthIndex];
+            var formattedDate = "";
 
-            if (i === 0) formattedDate += " - ";
+            for (let i = 0; i < 2; i++) {
+                var date = new Date(dates[i]);
+
+                var day = date.getDate();
+                var monthIndex = date.getMonth();
+
+                var months = [
+                    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                ];
+
+                formattedDate += day + ' ' + months[monthIndex];
+
+                if (i === 0) formattedDate += " - ";
+            }
+
+            document.getElementById("taskDate" + reminder.id).innerText = formattedDate;
+        });
+
+        var tasks = [];
+
+        const project = {
+            start: projectStartDate,
+            end: projectEndDate,
+            name: document.getElementById("projectName").innerText,
+            id: document.getElementById("projectId").innerText,
+            type: "project",
+            hideChildren: false,
+            displayOrder: 1
+        };
+
+        tasks.push(project);
+
+        const cards = document.querySelectorAll('.card');
+
+        var taskStartDate, taskEndDate;
+        var progressval, nameval;
+
+        cards.forEach((card, index) => {
+            // Create an object for the task
+            var cardName = card.id;
+
+            nameval = card.querySelector('span').innerText;
+
+            var parentElement = card.parentNode;
+
+            if (parentElement.id === 'inprogress') {
+                progressval = 50;
+                nameval += " [In Progress]";
+            } else if (parentElement.id === 'todo') {
+                progressval = 0;
+                nameval += " [To Do]";
+            } else {
+                progressval = 100;
+                nameval += " [Done]";
+            }
+
+            var remindersearch = cardName.replace("card", "");
+
+            var reminderelement = document.getElementById(remindersearch);
+
+            if (reminderelement !== null) {
+                var dates = reminderelement.innerText.split("#");
+                taskStartDate = new Date(dates[0]);
+                taskEndDate = new Date(dates[1]);
+            } else {
+                taskStartDate = projectStartDate;
+                taskEndDate = projectEndDate;
+            }
+
+            var task = {
+                start: taskStartDate,
+                end: taskEndDate,
+                name: nameval,
+                id: remindersearch,
+                isDisabled: true,
+                type: "task",
+                progress: progressval,
+                project: document.getElementById("projectName").innerText, // Assuming projectName is available in this scope
+            };
+
+            tasks.push(task);
+        });
+
+        const firstTask = tasks.shift();
+
+        tasks.sort((a, b) => {
+            // Compare start dates first
+            if (a.start < b.start) return -1;
+            if (a.start > b.start) return 1;
+
+            // If start dates are equal, compare end dates
+            if (a.start.getTime() === b.start.getTime()) {
+                if (a.end < b.end) return -1;
+                if (a.end > b.end) return 1;
+            }
+
+            // If both start and end dates are equal, maintain the original order
+            return 0;
+        });
+
+        tasks.unshift(firstTask);
+
+        for (let i = 1; i < tasks.length; i++) {
+            tasks[i]["displayOrder"] = i;
         }
-
-        document.getElementById("taskDate" + reminder.id).innerText = formattedDate;
-    });
-
-
+    }
 </script>
+
+<section id="calendarSection" style="display: none;">
+    <iframe src="calendar.html" style="width: 100%; height: 100%; position: absolute; border: none;"></iframe>
+</section>
+
 </body>
 </html>
 

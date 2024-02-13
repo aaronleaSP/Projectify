@@ -197,12 +197,6 @@ addEventTitle = document.querySelector(".event-name");
 addEventFrom = document.querySelector(".event-time-from");
 addEventTo = document.querySelector(".event-time-to");
 
-addEventBtn.addEventListener("click", () => {
-    addEventContainer.classList.toggle("active");
-});
-addEventCloseBtn.addEventListener("click", () => {
-    addEventContainer.classList.remove("active");
-});
 document.addEventListener("click", (e) => {
     if (e.target !== addEventBtn && !addEventContainer.contains(e.target)) {
         addEventContainer.classList.remove("active");
@@ -298,7 +292,7 @@ function getActiveDay(date){
     const day = new Date(year,month,date);
     const dayName = day.toString().split(" ")[0];
     eventDay.innerHTML = dayName;
-    eventDate.innerHTML = date + "" +months[month]+""+year;
+    eventDate.innerHTML = date + " " +months[month] + " " + year;
 }
 
 //function to show events of that day
@@ -336,6 +330,7 @@ function updateEvents(date){
     saveEvents();
 }
 
+/*
 // lets create function to add events
 addEventSubmit.addEventListener("click", ()=>{
     const eventTitle = addEventTitle.value;
@@ -405,7 +400,8 @@ function convertTime(time){
     timeHour = timeHour %12 ||12;
     time = timeHour + ":" +timeMin +" "+timeFormat;
     return time;
-}
+}*/
+
 
 //lets create a function to remove events on click
 eventsContainer.addEventListener("click", (e) => {
