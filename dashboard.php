@@ -308,7 +308,7 @@ function getAllProjects()
                     <img class="card-img-top" src="images/cloudcard.jpg" alt="Card image cap" style="height: 500px; object-fit: cover">
                     <div class="card-body" >
                         <h5 class="card-title" style="text-align: left">All Projects</h5>
-                        <p class="card-text" style="text-align: left">View all of the projects you're part in</p>
+                        <p class="card-text" style="text-align: left">View all the projects you're a part of</p>
                         <a onclick="getAllProjects();" href="#" class="btn btn-primary">All projects</a>
                     </div>
                 </div>
