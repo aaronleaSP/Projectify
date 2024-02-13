@@ -811,15 +811,22 @@ function retrievePermission() {
 echo "<span id='projectName' style='display: none'>".$projectname."</span>";
 echo "<span id='projectId' style='display: none'>".$id."</span>";
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <!--Start of NavBar-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <img src="images/icon.png" alt="Logo" style="height: 50px; align-content: center" onclick="function dashboard() {window.location.href = './dashboard.php'} dashboard();">
 
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class='navbar-nav'>
-
-
             </ul>
             <div class='d-flex ms-auto' style="align-content: center">
                 <span style="color: black;">Welcome, <span id="user"></span></span>

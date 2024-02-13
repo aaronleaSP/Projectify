@@ -239,6 +239,8 @@ function getAllProjects()
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="styles/dashboard.css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
@@ -250,9 +252,13 @@ function getAllProjects()
 </head>
 <body>
 <!--Start of NavBar-->
-<nav class="navbar navbar-expand-lg nav-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <img src="images/icon.png" alt="Logo" style="height: 50px; align-content: center" onclick="function dashboard() {window.location.href = './dashboard.php'} dashboard();">
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class='navbar-nav'>
@@ -271,6 +277,10 @@ function getAllProjects()
         </div>
     </div>
 </nav>
+
+
+
+
 
 <!-- Beginning of a new start
 <section class="project-management" id="projectManagementSection">
