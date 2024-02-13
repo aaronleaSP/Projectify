@@ -98,6 +98,8 @@ function getAllProjects()
 
 
             }
+        } else {
+            echo "<div>No projects found</div>";
         }
     }
 }
