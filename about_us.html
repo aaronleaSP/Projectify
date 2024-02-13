@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>About us</title>
     <link rel="stylesheet" href="styles/about_us.css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
-<h1 style="font-size: 40px;font-family: Arial,serif">About Us</h1>
+<h1 style="font-size: 40px;font-family: Arial,serif; margin-left: 15px;">About Us</h1>
 <div class="accordion-container">
     <div class="accordion-item">
 
@@ -28,8 +29,9 @@
                     <li>Calendar Page</li>
                     <Li>Logout</Li>
                     <li>About us Page</li>
+                    <li>Project Introduction Page</li>
+                    <li>Landing Page</li>
                 </ul>
-
         </div>
     </div>
 
@@ -59,8 +61,19 @@
             <div class="arrow">&#9654;</div>
         </div>
         <div class="accordion-content">
-            <!-- Content for the third accordion item goes here -->
-            Content for boy2 image
+            <h3>Contribution:</h3>
+            <ul type="disc">
+                <li>Login - Firebase and Google Sign In</li>
+                <li>Add / Delete / Retrieve Projects by User</li>
+                <li>Add / Delete / Retrieve Task by Project</li>
+                <li>Modify Task - Set description, dates, status and assignee</li>
+                <li>Permissions handling - Viewer cannot interact with tasks</li>
+                <li>Permissions handling - Only project owner can modify team members and roles</li>
+                <li>Notifications - Simple UI Badge to remind user of expiring tasks</li>
+                <li>Database handling - MySQL queries, table creation, maintenance</li>
+                <li>Integration of team member's code into existing codebase</li>
+                <ul><li>Passing of data into Gantt Chart</li></ul>
+            </ul>
         </div>
     </div>
 
@@ -79,7 +92,9 @@
         </div>
     </div>
 </div>
-
 <script src="scripts/about_us.js"></script>
+<div class="iframe-container">
+    <iframe src="map.html" style="position: absolute; width: 99%; height: 100%; border: none;"></iframe>
+</div>
 </body>
 </html>

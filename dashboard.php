@@ -36,10 +36,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
                     die("Delete project failed: " . mysqli_error($conn) . $redirect);
                 }
-            }
-            else {
+            } else {
                 echo "<script>alert('You do not own this project!')</script>";
             }
+        }
+    }
+
+    if (isset($_POST["deletedReminder"])) {
+        $reminderid = $_POST["deletedReminder"];
+        $user = $_POST["userAuthenticate"];
+
+        if (!$conn) {
+            die("Connection failed: " . mysqli_connect_error() . $redirect);
+        }
+
+        $sql = "DELETE FROM reminders_table WHERE reminder_id = '$reminderid'";
+
+        if (!mysqli_query($conn, $sql)) {
+            die("Delete reminder failed: " . mysqli_error($conn) . $redirect);
         }
     }
 
@@ -126,8 +140,14 @@ function getAllProjects()
                 inputhidden2.name = "userEmail";
                 inputhidden2.value = user.email;
 
+                var inputhidden3 = document.createElement("input");
+                inputhidden3.type = "hidden";
+                inputhidden3.name = "userAuthenticate";
+                inputhidden3.value = user.email;
+
                 form.appendChild(inputhidden);
                 form.appendChild(inputhidden2);
+                form.appendChild(inputhidden3);
 
                 document.body.appendChild(form);
                 document.getElementById('deleteProjectForm').submit();
@@ -154,7 +174,13 @@ function getAllProjects()
                 inputhidden.name = "userEmail";
                 inputhidden.value = user.email;
 
+                var inputhidden2 = document.createElement("input");
+                inputhidden2.type = "hidden";
+                inputhidden2.name = "userAuthenticate";
+                inputhidden2.value = user.email;
+
                 form.appendChild(inputhidden);
+                form.appendChild(inputhidden2);
 
                 document.body.appendChild(form);
                 document.getElementById('allProjectForm').submit();
@@ -228,10 +254,9 @@ function getAllProjects()
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class='navbar-nav'>
-                <li class='nav-item'><b><a onclick="function dashboard() {window.location.href = './dashboard.php'} dashboard();" class='nav-link'  >Project Management</a></li></b>
-                <li class='nav-item'><b> <a class='nav-link' onclick="toggleNotiCardMenu(this);">Notifications</a></li></b>
-                <li class='nav-item'><b> <a onclick="showSection('calendarSection'); closeNotiCardMenu();" class='nav-link'>Calendar</a></li></b>
-
+                <li class='nav-item'><a onclick="showSection('projectManagementSection'); closeNotiCardMenu();" class='nav-link'>Project Management</a></li>
+                <li class='nav-item'> <a class='nav-link' onclick="toggleNotiCardMenu(this);" id="notif">Notifications<span id="badge" class="badge bg-danger" style="margin-left: 5px;"></span></a></li>
+                <li class='nav-item'><a onclick="showSection('calendarSection'); closeNotiCardMenu();" class='nav-link'>Calendar</a></li>
             </ul>
             <div class='d-flex ms-auto' style="align-content: center">
                 <!-- <span style="color: black;">Welcome, <span id="user"></span></span>-->
@@ -501,17 +526,15 @@ function getAllProjects()
         </div>
     </div>
 </div>
-<!-- input type="button" value="Add Notification" onclick="addNotification()">  Input button to add notification -->
 <!-- Define a template for the notification card -->
 <div class="notification-container">
     <template id="notificationTemplate">
         <a href="#" class="list-group-item list-group-item-action flex-column align-items-start notification-card">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">New Notification</h5>
-                <small>Just now</small>
+                <h5 class="mb-1">Task</h5>
+                <input type="button" class="btn btn-sm btn-outline-danger" value="Clear"></input>
             </div>
-            <p class="mb-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut maximus purus vel mi consequat, vitae condimentum quam consequat. Nulla facilisi. Proin hendrerit nisi id mauris hendrerit, nec venenatis orci ultricies. Maecenas condimentum, mauris nec interdum ullamcorper, felis dui eleifend magna, ac consectetur tortor velit ac est. Duis eget nunc ut velit varius gravida in at justo. Nulla facilisi. Donec hendrerit mauris eget nisi mattis, nec tempus est tempor. Vivamus suscipit, nisi non volutpat laoreet, nibh tortor vehicula lectus, vitae aliquet turpis felis eget risus. Nam id elit sed ligula vulputate congue.</p>
-            <small>Read more.</small>
+            <small style="margin-left: 10px;" class="expirydate"></small>
         </a>
     </template>
 </div>
@@ -520,15 +543,75 @@ function getAllProjects()
 
 
 <script>
-    function addNotification() {
+    var count = 0;
+    function addNotification(taskname, remindtime, reminderid) {
+        if (remindtime === '1970-01-01 01:00:00') {
+            return;
+        }
+
+        var badge = document.getElementById("badge");
         var notificationList = document.getElementById("notificationList");
         var notificationTemplate = document.getElementById("notificationTemplate");
 
+
         // Clone the template content
         var notificationCard = notificationTemplate.content.cloneNode(true);
+        var taskName = notificationCard.querySelector(".mb-1");
+        var expiryDate = notificationCard.querySelector(".expirydate");
+
+        taskName.textContent = taskname;
+
+        var clearButton = notificationCard.querySelector(".btn-outline-danger");
+        if (clearButton !== null) {
+            clearButton.onclick = function () {
+                var form = document.createElement("form");
+                form.id = "deleteReminderForm"
+                form.method = "post";
+                form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>"
+
+                var inputhidden = document.createElement("input");
+                inputhidden.type = "hidden";
+                inputhidden.name = "deletedReminder";
+                inputhidden.value = reminderid;
+
+                var inputuser = document.createElement("input");
+                inputuser.type = "hidden";
+                inputuser.name = "userAuthenticate";
+                inputuser.value = localStorage.getItem("user");
+
+                form.appendChild(inputhidden);
+                form.appendChild(inputuser);
+
+                document.body.appendChild(form);
+                document.getElementById('deleteReminderForm').submit();
+            }
+        }
+
 
         // Append the new notification card to the notification list
-        notificationList.appendChild(notificationCard);
+
+
+        // Set timeout to display the notification card
+        var currentTime = new Date().getTime();
+        var remindTime = new Date(remindtime);
+        remindTime.setHours(remindTime.getHours() + 8);
+        var remindTimeFormat = remindTime;
+
+        var remindTime = remindTime.getTime();
+        var timeUntilRemind = remindTime - currentTime;
+
+        if (timeUntilRemind > 0) {
+            setTimeout(function () {
+                expiryDate.textContent = "Expires soon";
+                notificationList.prepend(notificationCard);
+                badge.textContent = ++count;
+            }, timeUntilRemind);
+        } else {
+            // If the remind time is in the past, display the notification immediately
+            expiryDate.textContent = "Expired on " + remindTimeFormat;
+            notificationList.prepend(notificationCard);
+            badge.textContent = ++count;
+        }
     }
 
     // Menu toggle for aaron ;)
@@ -554,12 +637,24 @@ function getAllProjects()
         var cardMenu = document.getElementById("NoticardMenu");
         cardMenu.style.display = "none";
     }
+
+    function phpAuthenticate() {
+        var form = document.createElement("form");
+        form.id = "authenticateForm"
+        form.method = "post";
+        form.action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>"
+
+        var inputuser = document.createElement("input");
+        inputuser.type = "hidden";
+        inputuser.name = "userAuthenticate";
+        inputuser.value = localStorage.getItem("user");
+
+        form.appendChild(inputuser);
+        document.body.appendChild(form);
+
+        document.getElementById('authenticateForm').submit();
+    }
 </script>
-
-
-<!-- End of Notification popup -->
-
-
 </body>
 </html>
 
@@ -568,5 +663,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["projecttodelete"]) || isset($_POST["userEmail"])) {
         echo "<script>showSection('allProjectsSection')</script>";
     }
+
+    if (isset($_POST["userAuthenticate"])) {
+        $authenticatedUser = $_POST["userAuthenticate"];
+        $sql = "SELECT r.*, t.task_name FROM reminders_table r JOIN tasks_table t ON r.task_id = t.task_id JOIN permissions_table p ON t.project_id = p.project_id 
+           WHERE p.user_email = '$authenticatedUser' ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), r.remind_datetime)) DESC";
+
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<script>addNotification('" . $row['task_name'] . "','" . $row['remind_datetime'] . "','" . $row['reminder_id'] . "')</script>";
+                }
+            }
+        }
+    }
+}
+
+if (!isset($_POST["userAuthenticate"])) {
+    echo "<script>phpAuthenticate();</script>";
 }
 ?>

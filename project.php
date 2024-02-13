@@ -302,6 +302,7 @@ function retrievePermission() {
 <head>
     <meta charset="UTF-8">
     <title><?php echo htmlspecialchars($projectname);?></title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 
     <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
