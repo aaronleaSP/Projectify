@@ -235,7 +235,8 @@ function retrieveTask($category) {
         if (mysqli_num_rows($result) > 0) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'",'. htmlspecialchars(json_encode($row['task_description']), ENT_QUOTES).',"'.$row['task_status'].'","'.$row['assignee_email'].'"',");'>", htmlspecialchars($row['task_name']), "</div>";
+                echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'",'. htmlspecialchars(json_encode($row['task_description']), ENT_QUOTES).',"'.$row['task_status'].'","'.$row['assignee_email'].'"',
+                ");'><span>", htmlspecialchars($row['task_name']), "</span><span style='text-align: left;' id='taskDate", $row['task_id'], "'></span></div>";
 
                 $sql2 = "SELECT * FROM reminders_table WHERE project_id = '$id' AND task_id='" .$row['task_id']. "'";
 
@@ -244,7 +245,7 @@ function retrieveTask($category) {
                 if ($result2) {
                     if (mysqli_num_rows($result2) > 0) {
                         while ($row2 = mysqli_fetch_assoc($result2)) {
-                            echo "<div style='display: none' id='", $row['task_id'], "'>", $row2['start_date'] . "#" . $row2['end_date'] . "#" . $row2['remind_datetime'], "</div>";
+                            echo "<div style='display: none' class='reminder' id='", $row['task_id'], "'>", $row2['start_date'] . "#" . $row2['end_date'] . "#" . $row2['remind_datetime'], "</div>";
                         }
                     }
                 }
@@ -1014,6 +1015,34 @@ function retrievePermission() {
         // Show the clicked section
         document.getElementById(sectionId).style.display = 'block';
     }
+
+    var reminders = document.querySelectorAll('.reminder');
+
+    reminders.forEach(function(reminder) {
+        dates = reminder.innerText.split("#");
+
+        var formattedDate = "";
+
+        for (let i = 0; i < 2; i++) {
+            var date = new Date(dates[i]);
+
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+
+            var months = [
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+
+            formattedDate += day + ' ' + months[monthIndex];
+
+            if (i === 0) formattedDate += " - ";
+        }
+
+        document.getElementById("taskDate" + reminder.id).innerText = formattedDate;
+    });
+
+
 </script>
 </body>
 </html>
