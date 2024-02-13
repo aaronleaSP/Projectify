@@ -814,8 +814,7 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class='navbar-nav'>
-                <li class='nav-item'><a href='#' class='nav-link'>Project Management</a></li>
-                <li class='nav-item'> <a href='#' class='nav-link' onclick="toggleNotiCardMenu(this); closeDateCardMenu();">Notifications</a></li>
+
 
             </ul>
             <div class='d-flex ms-auto' style="align-content: center">

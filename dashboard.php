@@ -288,12 +288,12 @@ function getAllProjects()
 
 <!-- Start of Dashboard -->
 <section class="project-management" id="projectManagementSection">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
 
-            <div class="col-md mb-4" >
+            <div class="col-md-6 mb-4" >
                 <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
+                    <img class="card-img-top" src="images/cloudcard.jpg" alt="Card image cap" style="height: 500px; object-fit: cover">
                     <div class="card-body" >
                         <h5 class="card-title" style="text-align: left">All Projects</h5>
                         <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
@@ -301,9 +301,9 @@ function getAllProjects()
                     </div>
                 </div>
             </div>
-            <div class="col-md mb-4">
+            <div class="col-md-6 mb-4">
                 <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
+                    <img class="card-img-top" src="images/cloudcard2.jpg" alt="Card image cap" style="height: 500px; object-fit: cover"" >
                     <div class="card-body">
                         <h5 class="card-title" style="text-align: left">Add Projects</h5>
                         <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
@@ -312,38 +312,6 @@ function getAllProjects()
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: left">Projects to do</h5>
-                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="not_started.php" class="btn btn-primary">All projects</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: left">Projects in progress</h5>
-                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="in_progress.php" class="btn btn-primary">Add project</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="images/placeholder.jpg" alt="Card image cap" style="height: 225px">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: left">Projects in progress</h5>
-                        <p class="card-text" style="text-align: left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="all_project.php" class="btn btn-primary">Add project</a>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </section>
@@ -497,9 +465,9 @@ function getAllProjects()
     </ul>
 </section>
 
-<footer>
-                    <li><a class="text-info" href="about_us.html">About Us</a></li>
-                    <li><a class="text-info" href="project_intro.html">Project Introduction</a></li>
+<footer  style="background-color: white; " >
+    <li><a class="text-info" href="about_us.html">About Us</a></li>
+    <li><a class="text-info" href="project_intro.html">Project Introduction</a></li>
 </footer>
 
 
