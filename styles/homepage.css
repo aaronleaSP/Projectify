@@ -188,8 +188,8 @@ img {
 #taskSection {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height:400px;
+    align-items: flex-start;
+    height:auto;
 }
 
 .horizontal-section {
@@ -244,3 +244,34 @@ img {
 }
 
 /*footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-logo img {
+    width: 50px; /* Adjust the size as needed */
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer-contact {
+    text-align: left;
+}
+
+.footer-contact p {
+    margin: 5px 0;
+}
