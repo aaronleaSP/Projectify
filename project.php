@@ -125,9 +125,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = mysqli_query($conn, $sql);
         if ($result) {
             if (mysqli_num_rows($result) > 0) {
-                $sql = "DELETE FROM tasks_table WHERE task_id='$taskid'";
+                $sql = "DELETE FROM reminders_table WHERE task_id = '$taskid'";
 
-                if (!mysqli_query($conn, $sql)) {
+                $sql2 = "DELETE FROM tasks_table WHERE task_id='$taskid'";
+
+                if (!mysqli_query($conn, $sql) || !mysqli_query($conn, $sql2)) {
                     die("Delete task failed: " . mysqli_error($conn) . $redirect);
                 }
             } else {
@@ -177,6 +179,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     }
+
+    if (isset($_POST["startDate"])) {
+        $startDate = $_POST["startDate"];
+        $endDate = $_POST["endDate"];
+        $remindOption = $_POST["remindOption"];
+        $user = $_POST["user"];
+        $taskid = $_POST["taskid"];
+        $remindDateTime = $_POST["remindDateTime"];
+
+        $remindDateTime = str_replace('T', ' ', $remindDateTime);
+        $remindDateTime = str_replace('Z', '', $remindDateTime);
+
+        $remindDateTime = date('Y-m-d H:i:s', strtotime($remindDateTime));
+
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND user_email='$user' AND (permission_type='Editor' OR permission_type='Owner')";
+
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $sql = "SELECT * FROM reminders_table WHERE task_id='$taskid'";
+
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    if (mysqli_num_rows($result) == 0) {
+                        $sql = "INSERT INTO reminders_table (project_id, task_id, start_date, end_date, remind_datetime, remind_option) VALUES ('$id' ,'$taskid', '$startDate', '$endDate', '$remindDateTime', '$remindOption')";
+                        if (!mysqli_query($conn, $sql)) {
+                            die("Create reminder failed: " . mysqli_error($conn) . $redirect);
+                        }
+                    } else {
+                        $sql = "UPDATE reminders_table SET start_date='$startDate', end_date='$endDate', remind_datetime='$remindDateTime', remind_option='$remindOption' WHERE task_id='$taskid'";
+                        if (!mysqli_query($conn, $sql)) {
+                            die("Update reminder failed: " . mysqli_error($conn) . $redirect);
+                        }
+                    }
+                }
+            }
+            else {
+                echo "<script>alert('You have viewer permissions only!')</script>";
+            }
+        }
+    }
 }
 
 
@@ -193,12 +236,24 @@ function retrieveTask($category) {
             // output data of each row
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<div class='card' onclick='modifyTask(", $row['task_id'].',"'.$row['task_name'].'",'. htmlspecialchars(json_encode($row['task_description']), ENT_QUOTES).',"'.$row['task_status'].'","'.$row['assignee_email'].'"',");'>", htmlspecialchars($row['task_name']), "</div>";
+
+                $sql2 = "SELECT * FROM reminders_table WHERE project_id = '$id' AND task_id='" .$row['task_id']. "'";
+
+                $result2 = mysqli_query($conn, $sql2);
+
+                if ($result2) {
+                    if (mysqli_num_rows($result2) > 0) {
+                        while ($row2 = mysqli_fetch_assoc($result2)) {
+                            echo "<div style='display: none' id='", $row['task_id'], "'>", $row2['start_date'] . "#" . $row2['end_date'] . "#" . $row2['remind_datetime'], "</div>";
+                        }
+                    }
+                }
             }
         }
     }
 
     if (!$invokedBefore) {
-        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id'";
+        $sql = "SELECT * FROM permissions_table WHERE project_id = '$id' AND (permission_type='Owner' OR permission_type='Editor')";
 
         $result = mysqli_query($conn, $sql);
         if ($result) {
@@ -407,6 +462,7 @@ function retrievePermission() {
             document.getElementById("assigneeEmail").value = assigneeEmail;
 
             document.getElementById('assigneetaskid').value = taskid;
+            document.getElementById("scheduletaskid").value = taskid;
 
             document.getElementById('deleteTask').onclick = function() {
                 deleteTask(taskid);
@@ -417,9 +473,42 @@ function retrievePermission() {
             else if (taskstatus === "In Progress") select.selectedIndex = 1;
             else select.selectedIndex = 2;
 
+            document.getElementById("startDate").value = "";
+            document.getElementById("endDate").value = "";
+            document.getElementById("endTime").value = "";
+
+            document.getElementById("selectDueStatus").value = 1;
+
             document.getElementById('selectTaskStatus').onchange = function() {
                 let selectedOption = this.value;
                 updateTaskStatus(selectedOption, taskid);
+            }
+
+            var dates = document.getElementById(taskid);
+
+            if (dates !== null) {
+                dates = dates.innerText.split("#");
+
+                var formattedDate = "";
+
+                for (let i = 0; i < 2; i++) {
+                    var date = new Date(dates[i]);
+
+                    var day = date.getDate();
+                    var monthIndex = date.getMonth();
+
+                    var months = [
+                        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                    ];
+
+                    formattedDate += day + ' ' + months[monthIndex];
+
+                    if (i === 0) formattedDate += " - "
+                }
+                document.getElementById("dateButton").value = formattedDate;
+            } else {
+                document.getElementById("dateButton").value = "Dates";
             }
 
             modal.style.display = "block";
@@ -642,6 +731,67 @@ function retrievePermission() {
             var cardMenu = document.getElementById("cardMenu");
             cardMenu.style.display = "none";
         }
+
+        function scheduleDates() {
+            var startDate = document.getElementById("startDate").value;
+            var endDate = document.getElementById("endDate").value;
+            var endTime = document.getElementById("endTime").value;
+
+            var dueStatus = document.getElementById("selectDueStatus").value;
+            var remindOption = document.getElementById("remindOption");
+
+            if (startDate.trim() === "" || endDate.trim() === "" || endTime.trim() === "") {
+                alert("Date and time cannot be empty!");
+                return;
+            }
+
+            var remindDateTimeString = endDate + " " + endTime;
+            var remindDateTime = new Date(remindDateTimeString);
+
+            if (dueStatus === "1") {
+                remindOption.value = "None";
+                remindDateTime = "";
+            }
+            else if (dueStatus === "2") {
+                remindOption.value = "At time of due date";
+            }
+            else if (dueStatus === "3") {
+                remindOption.value = "5 Minutes before";
+                remindDateTime.setMinutes(remindDateTime.getMinutes() - 5);
+            }
+            else if (dueStatus === "4") {
+                remindOption.value = "15 Minutes before";
+                remindDateTime.setMinutes(remindDateTime.getMinutes() - 15);
+            }
+            else if (dueStatus === "5") {
+                remindOption.value = "1 Hour before";
+                remindDateTime.setMinutes(remindDateTime.getMinutes() - 60);
+            }
+            else {
+                remindOption.value = "1 Day before";
+                remindDateTime.setDate(remindDateTime.getDate() - 1);
+            }
+
+            const user = firebase.auth().currentUser.email;
+            document.getElementById("scheduleUser").value = user;
+
+            if (remindDateTime !== "") {
+                var remindDateFormatted = new Date(remindDateTime);
+                remindDateTimeString = remindDateFormatted.toISOString();
+                document.getElementById("remindDateTime").value = remindDateTimeString;
+            } else {
+                document.getElementById("remindDateTime").value = "";
+            }
+
+            document.getElementById("scheduleDateForm").submit();
+        }
+
+        function updateEndDate() {
+            var endDate = document.getElementById("endDate");
+            endDate.min = document.getElementById("startDate").value;
+
+            endDate.value = "";
+        }
     </script>
 
     <link rel="stylesheet" href="styles/dashboard.css">
@@ -676,7 +826,7 @@ function retrievePermission() {
         <div class="modal-content">
             <div class="modal-header">
                 <p id="taskname" class="h2">Task Name</p>
-                <p id="taskstatus" style="margin-left: 5px;">Task ID</p>
+                <p id="taskstatus" style="margin-left: 10px;">Task ID</p>
                 <input type="button"  onclick="closeModal();" class="btn-close" aria-label="Close">
             </div>
             <div class="modal-body">
@@ -746,38 +896,42 @@ function retrievePermission() {
                         <div>
                             <div style="margin-top: 10px;">
                                 <div style="margin-top: 10px;">
-                                    <input type="button" class="btn btn-light" style="width: 100%; text-align: start" value="Dates" onclick="toggleDateCardMenu(this); closeCardMenu();">
+                                    <input type="button" class="btn btn-light" id="dateButton" style="width: 100%; text-align: start" value="Dates" onclick="toggleDateCardMenu(this); closeCardMenu();">
                                     <!-- Card menu for Dates -->
                                     <div id="dateCardMenu" class="card-menu" style="width: auto; display: none;">
                                         <input type="button" onclick="closeDateCardMenu()" class="btn-close" style="margin-bottom: 15px; float: right;">
                                         <h5 class="card-title">Dates</h5>
                                         <p class="card-text">Here you can manage dates and deadlines.</p>
-                                        <div id="scheduleForm">
+                                        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $id . '&name=' . $projectname;?>" method="post" id="scheduleDateForm" onsubmit="return false;">
                                             <div style="display: flex; flex-direction: row;">
                                                 <div style="margin-right: 20px;">
-                                                    <label for="dateInput">Start Date:</label>
-                                                    <input type="date" id="dateInput" name="dateInput" onkeydown="return false;">
+                                                    <label for="startDate">Start Date:</label>
+                                                    <input type="date" id="startDate" name="startDate" onkeydown="return false;" onchange="updateEndDate();" required>
                                                 </div>
                                                 <div style="margin-right: 20px;">
-                                                    <label for="dateInput2">End Date:</label>
-                                                    <input type="date" id="dateInput2" name="dateInput" onkeydown="return false;">
-                                                    <input type="time" id="timeInput" name="timeInput" onkeydown="return false;">
+                                                    <label for="endDate">End Date:</label>
+                                                    <input type="date" id="endDate" name="endDate" onkeydown="return false;" required>
+                                                    <input style="width: 100%;" type="time" id="endTime" name="endTime" onkeydown="return false;" required>
                                                 </div>
                                                 <div>
                                                     <label for="selectDueStatus">Remind me:</label>
-                                                    <select class="due-select" id="selectDueStatus">
-                                                        <option value="1">None</option>
+                                                    <select class="due-select" id="selectDueStatus" name="selectDueStatus" required>
+                                                        <option value="1" selected>None</option>
                                                         <option value="2">At time of due date</option>
                                                         <option value="3">5 Minutes before</option>
                                                         <option value="4">15 Minutes before</option>
                                                         <option value="5">1 Hour before</option>
-                                                        <option value="5">1 Day before</option>
+                                                        <option value="6">1 Day before</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <br>
-                                            <input type="button" id="scheduleButton" class="btn btn-primary" style="width: 100%;" value="Schedule" onclick="displaySchedule()">
-                                        </div>
+                                            <input type="hidden" name="user" id="scheduleUser">
+                                            <input type="hidden" name="taskid" id="scheduletaskid">
+                                            <input type="hidden" name="remindDateTime" id="remindDateTime">
+                                            <input type="hidden" name="remindOption" id="remindOption">
+                                            <input type="button" id="scheduleButton" class="btn btn-primary" style="width: 100%;" value="Schedule" onclick="scheduleDates();">
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -802,34 +956,6 @@ function retrievePermission() {
         </div>
     </div>
 </div>
-
-<section class="calendar" id="calendarSection" style="display: none;">
-    <!-- Calendar content goes here -->
-    <p/><b>Select Start and End Dates</b>
-    <div id="scheduleForm">
-        <label for="dateInput">Start Date:</label>
-        <input type="date" id="dateInput" name="dateInput" onkeydown="return false;">
-
-        <label for="dateInput2">End Date:</label>
-        <input type="date" id="dateInput2" name="dateInput" onkeydown="return false;">
-
-        <button id="scheduleButton" onclick="displaySchedule()">Schedule</button>
-    </div>
-</div>
-    <div id="scheduleDisplay"></div>
-</section>
-
-<script>
-    function displaySchedule() {
-        var selectedDate = document.getElementById('dateInput').value;
-        var selectedDate2 = document.getElementById('dateInput2').value;
-        var scheduleDisplay = document.getElementById('scheduleDisplay');
-        scheduleDisplay.innerHTML = `<p>Schedule for ${selectedDate} to ${selectedDate2}</p>`;
-
-        // Add your logic to display the schedule based on the selected date
-        // You can fetch data from the server, show events, etc.
-    }
-</script>
 
 <section id="projectBoardSection">
     <div class="column" id="todo">
@@ -894,9 +1020,7 @@ function retrievePermission() {
 
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["taskdesc"]) || isset($_POST["addAssigneeEmail"])) {
-        if (isset($_POST["addAssigneeEmail"])) $assigneeEmail = $_POST["addAssigneeEmail"];
-        else $assigneeEmail = "";
+    if (isset($_POST["taskdesc"]) || isset($_POST["addAssigneeEmail"]) || isset($_POST["startDate"])) {
 
         $sql = "SELECT * FROM tasks_table WHERE task_id='$taskid'";
 
@@ -904,7 +1028,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result) {
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<script>modifyTask(", $row['task_id'] . ',"' . $row['task_name'] .'",'. json_encode($row['task_description']) .',"'. $row['task_status'] . '","' . $assigneeEmail .'"', ");</script>";
+                    echo "<script>modifyTask(", $row['task_id'] . ',"' . $row['task_name'] .'",'. json_encode($row['task_description']) .',"'. $row['task_status'] . '","' . $row['assignee_email'] .'"', ");</script>";
                 }
             }
         }

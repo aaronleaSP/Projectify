@@ -24,10 +24,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = mysqli_query($conn, $sql);
         if ($result) {
             if (mysqli_num_rows($result) > 0) {
-                $sql = "DELETE FROM tasks_table WHERE project_id = '$deleteid'";
-                $sql2 = "DELETE FROM permissions_table WHERE project_id = '$deleteid'";
+                $sql = "DELETE FROM reminders_table WHERE project_id = '$deleteid'";
+                $sql2 = "DELETE FROM tasks_table WHERE project_id = '$deleteid'";
+                $sql3 = "DELETE FROM permissions_table WHERE project_id = '$deleteid'";
 
-                if (mysqli_query($conn, $sql) && mysqli_query($conn, $sql2)) {
+                if (mysqli_query($conn, $sql) && mysqli_query($conn, $sql2) && mysqli_query($conn, $sql3)) {
                     $sql = "DELETE FROM projects_table WHERE project_id = '$deleteid'";
                     if (!mysqli_query($conn, $sql)) {
                         die("Delete tasks and permissions failed: " . mysqli_error($conn) . $redirect);
