@@ -181,11 +181,22 @@
 </section>
 
 <footer>
-
-    <a href="about_us.html">About Us</a>
-    <a href="project_intro.html">Project Introduction</a>
-
+    <div class="footer-content">
+        <div class="footer-logo">
+            <img style="width: 200px;height: 80px;" src="images/icon.png" alt="Application Icon">
+        </div>
+        <div class="footer-links">
+            <a href="about_us.html">About Us</a>
+            <a href="project_intro.html">Project Introduction</a>
+        </div>
+        <div class="footer-contact">
+            <p>Contact Us:</p>
+            <p>Email: projectify@gmail.com</p>
+            <p>Phone: +65 91823746</p>
+        </div>
+    </div>
 </footer>
+
 
 <script>
     function showSection(sectionId) {
