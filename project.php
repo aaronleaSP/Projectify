@@ -830,7 +830,6 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
 <nav>
     <a class="active" id="projectBoard" onclick="showSection('projectBoardSection')">Project Board</a>
     <a id="timeline" onclick="showSection('timelineSection')">Timeline</a>
-    <a id="calendar" onclick="showSection('calendarSection')">Calendar</a>
     <a id="permission" onclick="showSection('permissionSection')">Invite Collaborators</a>
 </nav>
 
@@ -1222,11 +1221,6 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
         }
     }
 </script>
-
-<section id="calendarSection" style="display: none;">
-    <iframe src="calendar.html" style="width: 100%; height: 100%; position: absolute; border: none;"></iframe>
-</section>
-
 </body>
 </html>
 

@@ -135,8 +135,6 @@ body{
  .calendar .days .prev-date,
  .calendar .days .next-date{
      color: #b3b3b3;
-     visibility: hidden;
-     pointer-events: none;
  }
  .calendar .days .active{
      position: relative;

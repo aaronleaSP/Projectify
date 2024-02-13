@@ -223,8 +223,9 @@ function getAllProjects()
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class='navbar-nav'>
-                <li class='nav-item'><a href='#' class='nav-link'>Project Management</a></li>
-                <li class='nav-item'> <a href='#' class='nav-link' onclick="toggleNotiCardMenu(this); closeDateCardMenu();">Notifications</a></li>
+                <li class='nav-item'><a onclick="showSection('projectManagementSection'); closeNotiCardMenu();" class='nav-link'>Project Management</a></li>
+                <li class='nav-item'> <a class='nav-link' onclick="toggleNotiCardMenu(this);">Notifications</a></li>
+                <li class='nav-item'><a onclick="showSection('calendarSection'); closeNotiCardMenu();" class='nav-link'>Calendar</a></li>
 
             </ul>
             <div class='d-flex ms-auto' style="align-content: center">
@@ -379,27 +380,10 @@ function getAllProjects()
     </div>
 </section>
 
-<section class="calendar" id="calendarSection" style="display: none;">
-    <!-- Calendar content goes here -->
-    <p>Calendar Section Content</p>
-    <div id="scheduleForm">
-        <label for="dateInput">Choose a Date:</label>
-        <input type="date" id="dateInput" name="dateInput">
-        <button id="scheduleButton" onclick="displaySchedule()">Schedule</button>
-    </div>
-
-    <div id="scheduleDisplay"></div>
+<section id="calendarSection" style="display: none;">
+    <iframe src="calendar.html" style="width: 100%; height: 100%; position: absolute; border: none;"></iframe>
 </section>
 
-<script>
-    function displaySchedule() {
-        var selectedDate = document.getElementById('dateInput').value;
-        var scheduleDisplay = document.getElementById('scheduleDisplay');
-        scheduleDisplay.innerHTML = `<p>Schedule for ${selectedDate}</p>`;
-
-        // Add your logic to display the schedule based on the selected date
-        // You can fetch data from the server, show events, etc.
-    }
 </script>
 <!-- End of wtf this is-->
 
