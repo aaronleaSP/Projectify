@@ -930,7 +930,6 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
                                             <tbody id="assigneeTable">
                                             </tbody>
                                         </table>
-                                        <input type="button"  class="btn btn-primary" style="width: 100%;" value="+ Add">
                                     </div>
                                 </div>
                             </div>
