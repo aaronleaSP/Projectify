@@ -1181,7 +1181,7 @@ echo "<span id='projectId' style='display: none'>".$id."</span>";
             // Create an object for the task
             var cardName = card.id;
 
-            nameval = card.querySelector('span').innerText;
+            nameval = card.querySelector('div').innerText;
 
             var parentElement = card.parentNode;
 
